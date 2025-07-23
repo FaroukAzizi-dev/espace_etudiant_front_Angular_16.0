@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthServiceService } from '../../core/services/auth/auth-service.service';
+import { AuthServiceService } from '../../services/auth/auth-service.service';
 import { RouterModule } from '@angular/router'; // ✅ import RouterModule
 
 @Component({

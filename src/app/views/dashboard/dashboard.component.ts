@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { Router } from '@angular/router';
-import { AuthServiceService } from '../../core/services/auth/auth-service.service';
+import { AuthServiceService } from '../../services/auth/auth-service.service';
 import { SidebarComponent } from "../sidebar/sidebar.component";
 import { HeaderComponent } from "../header/header.component";
 

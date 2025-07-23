@@ -10,10 +10,7 @@ export class AuthServiceService {
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Logs a user into the Odoo backend.
-   * This version uses the Nginx proxy at /api/authenticate.
-   */
+  
   login(credentials: { login: string, password: string }): Observable<any> {
     const loginUrl = '/web/session/authenticate'; // Through proxy
 
