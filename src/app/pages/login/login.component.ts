@@ -1,70 +1,78 @@
-import { Component, inject , Injectable } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormGroup, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthServiceService } from '../../core/auth/auth-service.service';
+import { AuthServiceService } from '../../core/services/auth/auth-service.service';
+import { RouterModule } from '@angular/router'; // ✅ import RouterModule
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule , CommonModule],
+  imports: [ReactiveFormsModule , CommonModule , RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
 
-  email: string = '';
-  cin: string = '';
-  AuthService: AuthServiceService;
-  loginError: string = '';
-  isLoading: boolean = false;
+  loginForm: FormGroup;
+  isLoading = false;
+  errorMessage: string | null = null;
+  loginSuccess = false;
 
-  constructor(AuthService: AuthServiceService , private router : Router) {
-    this.AuthService = AuthService;
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthServiceService,
+    private router: Router // Injected to navigate after successful login
+  ) {
+    // Using Angular's Reactive Forms for robust validation
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required, Validators.email]], // Assuming login is an email
+      password: ['', [Validators.required]]
+    });
   }
 
-  onLogin() {
-    this.loginError = '';
-    this.isLoading = true;
+  /**
+   * Handles the form submission.
+   */
+  onSubmit(): void {
+    // Mark all fields as touched to trigger validation messages
+    this.loginForm.markAllAsTouched();
 
-    if (!this.email || !this.cin) {
-      this.loginError = 'Email and CIN are required';
-      this.isLoading = false;
-      return;
+    if (this.loginForm.invalid) {
+      return; // Stop if the form is invalid
     }
 
-    this.AuthService.Login(this.email, this.cin).subscribe({
-      next: (response: any) => { // Use 'any' for now, or define a proper interface for Odoo JSON-RPC responses
-        this.isLoading = false;
-        // Check if the Odoo JSON-RPC response contains an error in the 'result' field
-        if (response && response.result && response.result.error) {
-          this.loginError = response.result.error; // Access the error from 'result'
-          console.error('Login failed:', response.result.error);
-        } else if (response && response.result && response.result.token) {
-          // This is a successful login with a token
-          console.log('Login successful:', response);
-          this.AuthService.setToken(response.result.token);
-          this.router.navigate(['/dashboard']);
-        } else {
-          // Handle unexpected successful response format
-          this.loginError = 'An unexpected response was received.';
-          console.error('Unexpected successful login response:', response);
-        }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        console.error('Login failed:', error);
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.loginSuccess = false;
 
-        if (error.status === 0) {
-          this.loginError = 'Network error. Please check your connection.';
-        } else if (error.status >= 500) {
-          this.loginError = 'Server error. Please try again later.';
-        } else if (error.error && error.error.error) {
-          // This handles non-JSON-RPC errors where the error is directly in error.error
-          this.loginError = error.error.error;
-        } else {
-          this.loginError = 'Login failed. Please try again.';
-        }
+    const credentials = {
+      login: this.loginForm.value.username,
+      password: this.loginForm.value.password
+    };
+
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        // --- SUCCESS ---
+        this.isLoading = false;
+        this.loginSuccess = true;
+        console.log('Successfully logged in!', response);
+
+        // Optional: Store user info from the response (e.g., in a state management service)
+        // const userInfo = response.result;
+
+        // Navigate to the student dashboard or home page after a short delay
+        setTimeout(() => {
+          this.router.navigate(['/dashboard']); // Change to your target route
+        }, 1500);
+      },
+      error: (err) => {
+        // --- ERROR ---
+        this.isLoading = false;
+        this.loginSuccess = false;
+        // The error message is already created in the service's handleError
+        this.errorMessage = err.message;
+        console.error('Login failed:', err);
       }
     });
   }

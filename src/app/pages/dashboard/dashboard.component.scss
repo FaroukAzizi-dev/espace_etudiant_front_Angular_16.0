@@ -1,40 +1,65 @@
- .dashboard-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      background-color: #e6f7ff;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      color: #0056b3;
-      margin-bottom: 20px;
-    }
-    p {
-      color: #333;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .token-display {
-      font-family: monospace;
-      background-color: #f0f0f0;
-      padding: 5px 10px;
-      border-radius: 5px;
-      word-break: break-all; /* Ensures long tokens wrap */
-    }
-    button {
-      margin-top: 30px;
-      padding: 10px 20px;
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #c82333;
-    }
+/* dashboard.component.css */
+
+.layout {
+  display: flex; /* Establishes a flex container */
+  flex-direction: column; /* Stacks children vertically */
+  min-height: 100vh; /* Ensures the layout takes at least the full viewport height */
+}
+
+app-header {
+  /* The header will naturally take its content height due to flex-direction: column */
+  /* You can add specific styling here if needed, e.g., background-color, box-shadow */
+  width: 100%; /* Ensure header spans full width */
+  position: fixed; /* Fixes the header at the top */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Ensures header is above other content */
+}
+
+.main-container {
+  display: flex; /* Establishes a flex container for sidebar and dashboard */
+  flex: 1; /* Allows this container to grow and take remaining vertical space */
+  margin-top: 60px; /* Adjust this value to be the height of your header */
+  /* This creates space for the fixed header */
+}
+
+app-sidebar {
+  /* Sidebar will take its natural width */
+  /* You can set a fixed width if desired: width: 200px; */
+  background-color: #f0f0f0; /* Example background */
+  padding-top: 20px; /* Example padding */
+}
+
+.dashboard-container {
+  flex: 1; /* Allows the dashboard content to grow and take remaining horizontal space */
+  padding: 20px; /* Add some padding for content */
+  overflow-y: auto; /* Allows scrolling within the dashboard if content overflows */
+}
+
+/* Optional: Basic styling for header and sidebar for better visualization */
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar {
+  background-color: #eee;
+  padding: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: lightgray; /* Placeholder for image */
+}

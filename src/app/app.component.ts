@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
-import { HeaderComponent } from "./shared/header/header.component";
-import { SidebarComponent } from "./shared/sidebar/sidebar.component";
+import { HeaderComponent } from "./pages/header/header.component";
+import { SidebarComponent } from "./pages/sidebar/sidebar.component";
 
 
 @Component({
