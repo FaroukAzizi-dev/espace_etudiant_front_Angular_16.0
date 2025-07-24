@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router'; // ✅ import RouterModule
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule , CommonModule , RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -35,11 +35,11 @@ export class LoginComponent {
    * Handles the form submission.
    */
   onSubmit(): void {
-    // Mark all fields as touched to trigger validation messages
     this.loginForm.markAllAsTouched();
 
     if (this.loginForm.invalid) {
-      return; // Stop if the form is invalid
+      console.warn('%c[LOGIN] Form submission prevented - invalid form', 'color: #FF9800; font-weight: bold', this.loginForm.value);
+      return;
     }
 
     this.isLoading = true;
@@ -51,25 +51,37 @@ export class LoginComponent {
       password: this.loginForm.value.password
     };
 
+    console.log('%c[LOGIN] Attempting login with credentials', 'color: #4CAF50; font-weight: bold', {
+      username: credentials.login,
+      password: '•••••••' // Don't log actual password
+    });
+
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        // --- SUCCESS ---
-        this.isLoading = false;
-        this.loginSuccess = true;
-        console.log('Successfully logged in!', response);
-     
-        setTimeout(() => {
-          this.router.navigate(['/dashboard']); // Change to your target route
-        }, 1500);
+        if (response?.result) {
+          console.log('%c[LOGIN] Login successful - redirecting to dashboard', 'color: #4CAF50; font-weight: bold', response);
+          this.isLoading = false;
+          this.loginSuccess = true;
+          this.router.navigate(['/dashboard']);
+        } else {
+          console.warn('%c[LOGIN] Login response missing expected result', 'color: #FF9800; font-weight: bold', response);
+          this.isLoading = false;
+          this.errorMessage = 'Invalid server response';
+        }
       },
       error: (err) => {
-        // --- ERROR ---
+        console.error('%c[LOGIN] Login error occurred', 'color: #F44336; font-weight: bold', err);
         this.isLoading = false;
-        this.loginSuccess = false;
-        // The error message is already created in the service's handleError
         this.errorMessage = err.message;
-        console.error('Login failed:', err);
       }
     });
+  }
+
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      console.log('%c[LOGIN] Found existing session - clearing and reloading', 'color: #2196F3; font-weight: bold');
+      this.authService.clearSession();
+      window.location.reload();
+    }
   }
 }

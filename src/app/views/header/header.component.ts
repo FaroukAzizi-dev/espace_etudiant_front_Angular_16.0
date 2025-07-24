@@ -5,75 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <header class="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
-      <!-- Left side - Mobile menu button and logo -->
-      <div class="flex items-center">
-        <button 
-          class="lg:hidden mr-3 hover:bg-yellow-50 p-2 rounded-md transition-colors"
-          (click)="onMenuClick.emit()">
-          <!-- Menu Icon -->
-          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <div class="flex items-center">
-          <div class="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center mr-3">
-            <span class="text-white font-bold text-sm">ISP</span>
-          </div>
-          <div class="hidden sm:block">
-            <h1 class="text-lg font-bold text-gray-800">ISP TED University</h1>
-            <p class="text-xs text-gray-500">by Clevory</p>
-          </div>
-        </div>
-      </div>
+  templateUrl: './header.component.html',
 
-      <!-- Center - Page title -->
-      <div class="flex-1 text-center">
-        <h2 class="text-lg font-semibold text-gray-800">Tableau de Bord Étudiant</h2>
-      </div>
-
-      <!-- Right side - Notifications and user menu -->
-      <div class="flex items-center space-x-3">
-        <!-- Notification bell -->
-        <button class="relative hover:bg-yellow-50 p-2 rounded-md transition-colors">
-          <!-- Bell Icon -->
-          <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19H6.5A2.5 2.5 0 0 1 4 16.5v-9A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5H11z"/>
-          </svg>
-          <span class="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full border-2 border-white"></span>
-        </button>
-
-        <!-- User dropdown -->
-        <div class="relative">
-          <button 
-            class="relative h-9 w-9 rounded-full hover:bg-yellow-50 p-1 transition-colors"
-            (click)="toggleDropdown()">
-            <div class="h-8 w-8 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full flex items-center justify-center">
-              JD
-            </div>
-          </button>
-          
-          <!-- Dropdown menu -->
-          <div 
-            *ngIf="dropdownOpen" 
-            class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-gray-200 z-50">
-            <div class="py-1">
-              <div class="px-4 py-3 border-b border-gray-100">
-                <p class="text-sm font-medium leading-none">John Doe</p>
-                <p class="text-xs leading-none text-gray-500 mt-1">joh</p>
-              </div>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon Profil</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Paramètres</a>
-              <hr class="border-gray-100">
-              <a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Se déconnecter</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
-  `
 })
 export class HeaderComponent {
   @Output() onMenuClick = new EventEmitter<void>();
