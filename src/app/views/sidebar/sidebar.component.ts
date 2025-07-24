@@ -1,30 +1,138 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthServiceService } from '../../services/auth/auth-service.service';
-import { Router } from '@angular/router';
+
+interface NavigationItem {
+  name: string;
+  icon: string;
+  href: string;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink,CommonModule],
-  templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  imports: [CommonModule],
+  template: `
+    <!-- Mobile overlay -->
+    <div 
+      *ngIf="isOpen" 
+      class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
+      (click)="onClose.emit()">
+    </div>
+
+    <!-- Sidebar -->
+    <div [class]="getSidebarClasses()">
+      <div class="flex flex-col h-full">
+        <!-- Logo/Title - Mobile -->
+        <div class="p-6 border-b border-gray-200 lg:hidden">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center mr-3">
+                <span class="text-white font-bold text-sm">ISP</span>
+              </div>
+              <div>
+                <h1 class="text-lg font-bold text-gray-800">ISP TED</h1>
+                <p class="text-xs text-gray-500">by Clevory</p>
+              </div>
+            </div>
+            <button 
+              class="hover:bg-gray-100 p-2 rounded-md transition-colors"
+              (click)="onClose.emit()">
+              <!-- X Icon -->
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 p-4">
+          <div class="space-y-2">
+            <a
+              *ngFor="let item of navigationItems"
+              [href]="item.href"
+              [class]="getNavItemClasses(item)">
+              <ng-container [ngSwitch]="item.icon">
+                <!-- Home Icon -->
+                <svg *ngSwitchCase="'home'" [class]="getIconClasses(item)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                <!-- Calendar Icon -->
+                <svg *ngSwitchCase="'calendar'" [class]="getIconClasses(item)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <!-- FileText Icon -->
+                <svg *ngSwitchCase="'filetext'" [class]="getIconClasses(item)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <!-- MessageSquare Icon -->
+                <svg *ngSwitchCase="'messagesquare'" [class]="getIconClasses(item)" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </ng-container>
+              {{ item.name }}
+            </a>
+          </div>
+        </nav>
+
+        <!-- Footer -->
+        <div class="p-4 border-t border-gray-200">
+          <div class="text-xs text-gray-500 text-center">
+            <p>ISP TED University</p>
+            <p class="mt-1">Version 2.0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
 })
 export class SidebarComponent {
+  @Input() isOpen = false;
+  @Output() onClose = new EventEmitter<void>();
 
-  constructor(   
-    private authService: AuthServiceService,
-    private router: Router
-  ) {}
+  navigationItems: NavigationItem[] = [
+    {
+      name: "Tableau de bord",
+      icon: "home",
+      href: "#",
+      active: true,
+    },
+    {
+      name: "Planning de la semaine",
+      icon: "calendar",
+      href: "#planning",
+      active: false,
+    },
+    {
+      name: "Mes notes",
+      icon: "filetext",
+      href: "#notes",
+      active: false,
+    },
+    {
+      name: "Faire une réclamation",
+      icon: "messagesquare",
+      href: "#reclamation",
+      active: false,
+    },
+  ];
 
-  menuItems = [
-    { path: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
-    { path: '/profile', icon: 'person', label: 'Profile' },
-    { path: '/courses', icon: 'school', label: 'Courses' },
-    { path: '/grades', icon: 'grade', label: 'Grades' }
-  ]
+  getSidebarClasses(): string {
+    return `fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 
+            transform transition-transform duration-300 ease-in-out shadow-lg
+            ${this.isOpen ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0 lg:static lg:shadow-none lg:z-auto`;
+  }
 
+  getNavItemClasses(item: NavigationItem): string {
+    return `flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
+            ${item.active 
+              ? "bg-yellow-50 text-yellow-800 border border-yellow-200" 
+              : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"}`;
+  }
 
-
+  getIconClasses(item: NavigationItem): string {
+    return `mr-3 h-5 w-5 ${item.active ? "text-yellow-600" : "text-gray-500"}`;
+  }
 }

@@ -57,11 +57,7 @@ export class LoginComponent {
         this.isLoading = false;
         this.loginSuccess = true;
         console.log('Successfully logged in!', response);
-
-        // Optional: Store user info from the response (e.g., in a state management service)
-        // const userInfo = response.result;
-
-        // Navigate to the student dashboard or home page after a short delay
+     
         setTimeout(() => {
           this.router.navigate(['/dashboard']); // Change to your target route
         }, 1500);
