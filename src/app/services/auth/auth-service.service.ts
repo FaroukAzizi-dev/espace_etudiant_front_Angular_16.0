@@ -1,88 +1,75 @@
 import { Injectable, signal } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, catchError, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { of } from 'rxjs'; // Add this import
+import { environment } from '../../../environments/environment';
+import { catchError, tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthServiceService {
-  private dbName = 'db_pacu-6csq-3ta6'; // Your Odoo DB name
   private isAuthenticated = signal<boolean>(false);
+  private userData = signal<any>(null);
 
   constructor(
     private http: HttpClient,
-    private router: Router) { }
-
+    private router: Router
+  ) {}
 
   login(credentials: { login: string, password: string }): Observable<any> {
-    const loginUrl = '/web/session/authenticate'; // Through proxy
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
     const body = {
       jsonrpc: "2.0",
       params: {
-        db: this.dbName,
+        db: environment.odooDb,
         login: credentials.login,
         password: credentials.password
       }
     };
 
-    const options = {
-      headers: headers,
-      withCredentials: true  // Keep session cookie automatically
-    };
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
 
-
-    return this.http.post(loginUrl, body, options).pipe(
+    return this.http.post(environment.odooApiUrl, body, { headers }).pipe(
       tap((response: any) => {
-        console.log('Authentication successful:', response);
-        if (response?.result) {
+        if (response?.result?.uid) {
+          console.log('Réponse complète du serveur:', response);
           this.isAuthenticated.set(true);
-          localStorage.setItem('odoo_session', JSON.stringify(response));
+          this.userData.set(response.result);
+          localStorage.setItem('odoo_user', JSON.stringify(response.result));
+        } else {
+          throw new Error(response.error?.message || 'Authentification échouée');
         }
       }),
-      catchError(this.handleError)
-    );
-  }
-
-  logout(): Observable<any> {
-    const logouturl = 'http://localhost:8070/web/session/logout';
-
-    this.isAuthenticated.set(false);
-    localStorage.removeItem('odoo_session');
-
-    this.router.navigate(['/login']); // Immediate redirect (optimistic logout)
-
-    return this.http.post(logouturl, {}, { withCredentials: true }).pipe(
-      catchError(err => {
-        console.warn("Logout API failed, but session was cleared locally.", err);
-        return of(null); // Now 'of' is properly imported
+      catchError(error => {
+        console.error('Erreur complète:', error);
+        return throwError(() => error);
       })
     );
   }
 
-  isLoggedIn(): boolean {
-    return this.isAuthenticated() || !!localStorage.getItem('odoo_session');
+  getUserRole(): string {
+    const user = this.getCurrentUser();
+    console.log('Données utilisateur pour rôle:', user);
+
+    // Utilise directement le champ 'role' du contrôleur Odoo
+    return user.role || 'student';
   }
 
+  logout(): void {
+    this.isAuthenticated.set(false);
+    this.userData.set(null);
+    localStorage.removeItem('odoo_user');
+    this.router.navigate(['/login']);
+  }
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'An unknown error occurred!';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      if (error.error?.error?.data?.message) {
-        errorMessage = `Error from Odoo: ${error.error.error.data.message}`;
-      } else {
-        errorMessage = `Server returned code: ${error.status}, message: ${error.message}`;
-      }
-    }
-    console.error(errorMessage);
-    return throwError(() => new Error(errorMessage));
+  isLoggedIn(): boolean {
+    return this.isAuthenticated() || !!localStorage.getItem('odoo_user');
+  }
+
+  getCurrentUser() {
+    return this.userData() || JSON.parse(localStorage.getItem('odoo_user') || '{}');
   }
 }

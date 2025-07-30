@@ -30,7 +30,7 @@ import { CommonModule } from '@angular/common';
 
       <!-- Center - Page title -->
       <div class="flex-1 text-center">
-        <h2 class="text-lg font-semibold text-gray-800">Tableau de Bord Étudiant</h2>
+        <h2 class="text-lg font-semibold text-gray-800">Bienvenue dans votre espace enseignant </h2>
       </div>
 
       <!-- Right side - Notifications and user menu -->
