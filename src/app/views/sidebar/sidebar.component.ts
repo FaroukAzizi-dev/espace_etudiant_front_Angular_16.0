@@ -39,6 +39,12 @@ export class SidebarComponent {
       active: false,
     },
     {
+      name: "Consulter réclamation",
+      icon: "list",
+      href: "/dashboard/listereclamation",
+      active: false,
+    },
+    {
       name: "Faire une réclamation",
       icon: "messagesquare",
       href: "/dashboard/reclamation",
