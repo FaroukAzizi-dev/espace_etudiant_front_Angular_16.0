@@ -26,10 +26,16 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+            {
+              "glob": "**/*",
+              "input": "public",
+              "output": "/"
+            },
+            {
+              "glob": "**/*",
+              "input": "src/assets",
+              "output": "/assets/"
+            }
             ],
             "styles": [
               "src/styles.scss","node_modules/tailwindcss/tailwind.css"

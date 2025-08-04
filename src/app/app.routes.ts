@@ -4,6 +4,7 @@ import { guardGuard } from './services/guard/guard.guard';
 import { StudentDashboardComponent } from './views/student-contentdashboard/student-contentdashboard.component';
 import { ReclamationComponent } from './views/reclamation/reclamation.component';
 import { ListeReclamationsComponent } from './views/listereclamations/listereclamations/listereclamations.component';
+import { DocumentstageComponent } from './views/documentstage/documentstage/documentstage.component';
 
 export const routes: Routes = [
   { path: 'login', 
@@ -19,6 +20,9 @@ export const routes: Routes = [
       }, 
       {
         path: 'listereclamation' , component: ListeReclamationsComponent
+      },
+      {
+        path: 'documentstage' , component: DocumentstageComponent
       }
     ]
   },

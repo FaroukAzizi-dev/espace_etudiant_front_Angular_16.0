@@ -40,7 +40,7 @@ export class SidebarComponent {
     },
     {
       name: "Consulter réclamation",
-      icon: "list",
+      icon: "inbox",
       href: "/dashboard/listereclamation",
       active: false,
     },
@@ -50,6 +50,12 @@ export class SidebarComponent {
       href: "/dashboard/reclamation",
       active: false,
     },
+    {
+      name: "Document de Stage",
+      icon: "messagesquare",
+      href: "/dashboard/documentstage",
+      active: false,
+    }
   ];
 
   getSidebarClasses(): string {

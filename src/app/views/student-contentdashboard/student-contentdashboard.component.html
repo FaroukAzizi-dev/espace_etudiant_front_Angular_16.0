@@ -14,8 +14,8 @@
       <!-- Dynamic content area -->
       <div class="flex-1 overflow-y-auto">
         <router-outlet></router-outlet>
-        <app-dashboard-content *ngIf="!router.url.includes('reclamation')"></app-dashboard-content>
-      </div>
+        <app-dashboard-content *ngIf="!router.url.includes('reclamation') 
+                                  && !router.url.includes('documentstage')"></app-dashboard-content>     
     </div>
   </div>
 </div>

@@ -1,0 +1,33 @@
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <h2 class="text-center text-3xl font-semibold text-foreground mb-8">
+    Documents de Stage
+  </h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div 
+      *ngFor="let doc of documents" 
+      class="group relative overflow-hidden bg-card text-card-foreground p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer min-h-[160px] flex flex-col justify-center items-center text-center border hover:-translate-y-1"
+      (click)="handleDocumentClick(doc)"
+      [routerLink]="doc.route ? doc.route : null"
+    >
+      <!-- Gradient overlay basé sur la couleur du document -->
+      <div 
+        class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
+        [ngClass]="getGradientClass(doc.colorTheme)"
+      ></div>
+      
+      <!-- Contenu -->
+      <div class="relative z-10">
+        <h3 class="text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors duration-300">
+          {{ doc.title }}
+        </h3>
+        <p class="text-muted-foreground text-sm leading-relaxed">
+          {{ doc.description }}
+        </p>
+      </div>
+      
+      <!-- Indicateur hover -->
+      <div class="absolute bottom-0 left-0 right-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+    </div>
+  </div>
+</div>
