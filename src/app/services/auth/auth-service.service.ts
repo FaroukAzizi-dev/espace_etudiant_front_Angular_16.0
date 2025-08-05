@@ -108,4 +108,26 @@ export class AuthServiceService {
     }
     return throwError(() => new Error(errorMessage));
   }
+
+
+  getSessionData(): any {
+    const session = localStorage.getItem('odoo_session');
+    return session ? JSON.parse(session) : null;
+  }
+
+  getUserName(): string {
+    const session = this.getSessionData();
+    return session?.result?.name || '';
+  }
+
+  getUserId(): number {
+    const session = this.getSessionData();
+    return session?.result?.uid || 0;
+  }
+
+  getUserEmail(): string {
+    const session = this.getSessionData();
+    return session?.result?.username || '';
+  }
+
 }

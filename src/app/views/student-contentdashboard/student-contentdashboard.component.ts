@@ -5,7 +5,8 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { DashboardContentComponent } from '../dashboardcontent/dashboardcontent.component';
 import { RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
-import { DocumentstageComponent } from '../documentstage/documentstage/documentstage.component';
+import { DocumentstageComponent } from '../documentstage/documentstage.component';
+
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,

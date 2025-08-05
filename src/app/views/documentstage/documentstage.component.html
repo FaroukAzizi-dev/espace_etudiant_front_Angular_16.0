@@ -4,19 +4,21 @@
   </h2>
   
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div 
+    <!-- For documents with routes -->
+    <a 
       *ngFor="let doc of documents" 
       class="group relative overflow-hidden bg-card text-card-foreground p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer min-h-[160px] flex flex-col justify-center items-center text-center border hover:-translate-y-1"
-      (click)="handleDocumentClick(doc)"
-      [routerLink]="doc.route ? doc.route : null"
+      [routerLink]="doc.action === 'route' ? doc.route : null"
+      [attr.disabled]="doc.action !== 'route' ? 'true' : null"
+      (click)="doc.action !== 'route' ? handleDocumentClick(doc, $event) : null"
     >
-      <!-- Gradient overlay basé sur la couleur du document -->
+      <!-- Gradient overlay -->
       <div 
         class="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-300"
         [ngClass]="getGradientClass(doc.colorTheme)"
       ></div>
       
-      <!-- Contenu -->
+      <!-- Content -->
       <div class="relative z-10">
         <h3 class="text-xl font-semibold mb-2 text-foreground group-hover:text-primary transition-colors duration-300">
           {{ doc.title }}
@@ -26,8 +28,13 @@
         </p>
       </div>
       
-      <!-- Indicateur hover -->
+      <!-- Loading indicator -->
+      <div *ngIf="isLoading && doc.action === 'generate'" class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+        <span class="loading loading-spinner loading-md text-white"></span>
+      </div>
+      
+      <!-- Hover indicator -->
       <div class="absolute bottom-0 left-0 right-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-    </div>
+    </a>
   </div>
 </div>

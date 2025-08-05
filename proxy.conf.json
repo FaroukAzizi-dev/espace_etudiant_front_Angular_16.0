@@ -5,5 +5,11 @@
     "changeOrigin": true,
     "logLevel": "debug",
     "cookieDomainRewrite": "localhost"
+  },
+    "/api": {
+    "target": "http://localhost:8070",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }

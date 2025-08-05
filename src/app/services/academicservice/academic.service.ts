@@ -13,6 +13,6 @@ export class AcademicService {
   constructor(private http: HttpClient) { }
 
   getAcademicInfo(): Observable<AcademicInfo> {
-    return this.http.post<AcademicInfo>(this.apiUrl, {});
+    return this.http.get<AcademicInfo>(this.apiUrl, {});
   }
 }
