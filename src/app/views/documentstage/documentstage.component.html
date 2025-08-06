@@ -4,13 +4,11 @@
   </h2>
   
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- For documents with routes -->
-    <a 
+    <!-- Remove routerLink and use only click handler -->
+    <div 
       *ngFor="let doc of documents" 
       class="group relative overflow-hidden bg-card text-card-foreground p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer min-h-[160px] flex flex-col justify-center items-center text-center border hover:-translate-y-1"
-      [routerLink]="doc.action === 'route' ? doc.route : null"
-      [attr.disabled]="doc.action !== 'route' ? 'true' : null"
-      (click)="doc.action !== 'route' ? handleDocumentClick(doc, $event) : null"
+      (click)="handleDocumentClick(doc, $event)"
     >
       <!-- Gradient overlay -->
       <div 
@@ -29,12 +27,12 @@
       </div>
       
       <!-- Loading indicator -->
-      <div *ngIf="isLoading && doc.action === 'generate'" class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+      <div *ngIf="isLoading && doc.id === 'demande-stage'" class="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
         <span class="loading loading-spinner loading-md text-white"></span>
       </div>
       
       <!-- Hover indicator -->
       <div class="absolute bottom-0 left-0 right-0 h-1 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-    </a>
+    </div>
   </div>
 </div>

@@ -5,6 +5,7 @@ import { StudentDashboardComponent } from './views/student-contentdashboard/stud
 import { ReclamationComponent } from './views/reclamation/reclamation.component';
 import { ListeReclamationsComponent } from './views/listereclamations/listereclamations/listereclamations.component';
 import { DocumentstageComponent } from './views/documentstage/documentstage.component';
+import { LettreformComponent } from './views/lettreform/lettreform.component';
 export const routes: Routes = [
   { path: 'login', 
     component: LoginComponent 
@@ -20,8 +21,12 @@ export const routes: Routes = [
       {
         path: 'listereclamation' , component: ListeReclamationsComponent
       },
-      {
-        path: 'documentstage' , component: DocumentstageComponent
+      { 
+        path: 'documentstage',
+        children: [
+          { path: '', component: DocumentstageComponent }, 
+          { path: 'lettreaffectation', component: LettreformComponent }
+        ]
       }
     ]
   },

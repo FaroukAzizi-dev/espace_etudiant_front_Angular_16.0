@@ -53,7 +53,7 @@ export class LoginComponent {
 
     console.log('%c[LOGIN] Attempting login with credentials', 'color: #4CAF50; font-weight: bold', {
       username: credentials.login,
-      password: '•••••••' // Don't log actual password
+      password: '•••••••' 
     });
 
     this.authService.login(credentials).subscribe({

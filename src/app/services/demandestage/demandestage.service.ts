@@ -59,8 +59,9 @@ export class DemandestageService {
     // Coordinates configuration (adjust these as needed)
     const line1Y = height - 575;  // Y position for student name
     const line2Y = height - 595;  // Y position for programme/niveau
+    const line3Y = height - 238;
     const leftMargin = 140;       // Left margin for text
-
+    
     // Draw student name (centered)
     page.drawText(data.etudiant || 'Non spécifié', {
       x: leftMargin,
@@ -79,6 +80,21 @@ export class DemandestageService {
       y: line2Y,
       size: 12,
     });
+
+    // Draw combined programme/niveau text
+    page.drawText(combinedText, {
+      x: leftMargin,
+      y: line2Y,
+      size: 12,
+    });
+
+    if (data.date) {
+      page.drawText(data.date, {
+        x: leftMargin + 360, // Adjust position as needed
+        y: line3Y,
+        size: 12,
+      });
+    }
 
     const filledPdf = await pdfDoc.save();
     return new Blob([filledPdf], { type: 'application/pdf' });

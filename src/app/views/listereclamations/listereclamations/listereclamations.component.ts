@@ -18,7 +18,7 @@ export class ListeReclamationsComponent implements OnInit, OnDestroy {
   errorMessage = '';
   lastRefresh = new Date();
   
-  // ✅ Gestion des subscriptions
+ 
   private subscriptions: Subscription[] = [];
   private autoRefreshInterval?: Subscription;
 
@@ -34,14 +34,14 @@ export class ListeReclamationsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // ✅ Nettoyer les subscriptions
+ 
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (this.autoRefreshInterval) {
       this.autoRefreshInterval.unsubscribe();
     }
   }
 
-  // ✅ S'abonner aux changements de réclamations
+
   private subscribeToReclamations(): void {
     const sub = this.reclamationService.reclamations$.subscribe({
       next: (data) => {
@@ -53,7 +53,7 @@ export class ListeReclamationsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  // ✅ Démarrer le rafraîchissement automatique
+
   private startAutoRefresh(): void {
     // Rafraîchir toutes les 30 secondes
     this.autoRefreshInterval = interval(30000).subscribe(() => {
@@ -80,7 +80,7 @@ export class ListeReclamationsComponent implements OnInit, OnDestroy {
     this.subscriptions.push(sub);
   }
 
-  // ✅ Méthode de rafraîchissement manuel
+ 
   refreshReclamations(): void {
     console.log('Rafraîchissement manuel des réclamations...');
     this.isLoading = true;
@@ -160,7 +160,6 @@ export class ListeReclamationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ✅ Méthode pour obtenir le temps écoulé depuis le dernier refresh
   getTimeSinceLastRefresh(): string {
     const now = new Date();
     const diff = Math.floor((now.getTime() - this.lastRefresh.getTime()) / 1000);

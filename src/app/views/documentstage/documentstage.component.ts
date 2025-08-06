@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DemandestageService } from '../../services/demandestage/demandestage.service';
 import { AuthServiceService } from '../../services/auth/auth-service.service';
-
+import { Router , ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-documentstage',
   standalone: true,
@@ -16,12 +16,14 @@ export class DocumentstageComponent {
 
   constructor(
     private demandestage: DemandestageService,
-    private authService: AuthServiceService
+    private authService: AuthServiceService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute 
   ) {}
 
   documents = [
     {
-      id: 'demande-stage', // Added ID
+      id: 'demande-stage', 
       title: 'Demande de Stage',
       description: 'Soumettre votre demande de stage officielle avec tous les documents requis',
       action: 'generate',
@@ -39,8 +41,8 @@ export class DocumentstageComponent {
       id: 'lettre-affectation',
       title: 'Lettre d\'Affectation',
       description: 'Générer et télécharger votre lettre d\'affectation officielle',
-      action: 'route',
-      route: '/dashboard/lettre-affectation',
+      action: 'route', 
+      route: 'lettreaffectation', 
       colorTheme: 'red'
     }
   ];
@@ -55,8 +57,8 @@ export class DocumentstageComponent {
   }
 
   handleDocumentClick(doc: any, event: Event): void {
-    event.preventDefault(); // Prevent default behavior
-    event.stopPropagation(); // Stop event bubbling
+    event.preventDefault(); 
+    event.stopPropagation();
     
     switch(doc.action) {
       case 'download':
@@ -67,10 +69,12 @@ export class DocumentstageComponent {
       case 'generate':
         console.log('Document clicked:', doc);
         console.log('Action:', doc.action);
-        this.onDemandeStageClick(); // Removed the id check since we're using action
+        this.onDemandeStageClick(); 
         break;
       case 'route':
-        // Let the routerLink handle this
+        console.log('Document clicked:', doc);
+        console.log('Action:', doc.action);
+        this.router.navigate([doc.route], { relativeTo: this.activatedRoute });
         break;
       default:
         console.warn('Unknown document action:', doc.action);
