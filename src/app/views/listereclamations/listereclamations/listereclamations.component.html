@@ -41,19 +41,7 @@
     <p class="text-gray-600">Chargement des réclamations...</p>
   </div>
 
-  <!-- ✅ Message si aucune réclamation -->
-  <div *ngIf="!isLoading && reclamations.length === 0 && !errorMessage" class="text-center py-12">
-    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-    </svg>
-    <h3 class="text-lg font-medium text-gray-700 mb-2">Aucune réclamation</h3>
-    <p class="text-gray-500 mb-4">Vous n'avez pas encore soumis de réclamation.</p>
-    <button 
-      class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200"
-      routerLink="/reclamations/create">
-      Créer ma première réclamation
-    </button>
-  </div>
+  
 
   <!-- ✅ Liste des réclamations -->
   <div *ngIf="reclamations.length > 0" class="space-y-4">

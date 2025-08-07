@@ -1,0 +1,144 @@
+<div class="schedule-container">
+  <div class="schedule-header">
+    <h2>My Class Schedule</h2>
+    <div class="view-options">
+      <button 
+        (click)="changeView('day')" 
+        [class.active]="currentView === 'day'">
+        Day
+      </button>
+      <button 
+        (click)="changeView('week')" 
+        [class.active]="currentView === 'week'">
+        Week
+      </button>
+      <button 
+        (click)="changeView('month')" 
+        [class.active]="currentView === 'month'">
+        Month
+      </button>
+    </div>
+  </div>
+
+  <div class="navigation">
+    <button (click)="navigate('prev')" class="nav-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+      </svg>
+    </button>
+    
+    <h3 class="current-period">
+      @if (currentView === 'day') {
+        {{ formatDisplayDate(currentDate, 'EEEE, MMMM d, y') }}
+      } @else if (currentView === 'week') {
+        Week of {{ formatDisplayDate(daysInView[0], 'MMM d') }} - {{ formatDisplayDate(daysInView[6], 'MMM d, y') }}
+      } @else {
+        {{ formatDisplayDate(currentDate, 'MMMM y') }}
+      }
+    </h3>
+    
+    <button (click)="navigate('next')" class="nav-button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+      </svg>
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error-message">
+      <p>{{ error }}</p>
+    </div>
+  }
+
+  <!-- Day View -->
+  @if (currentView === 'day' && !loading && !error) {
+    <div class="day-view">
+      <div class="time-slots">
+        @for (hour of hoursToDisplay; track trackByHour($index, hour)) {
+          <div class="time-slot">
+            <div class="time-label">{{ hour }}:00</div>
+            <div class="sessions">
+              @for (session of getHourSessions(daysInView[0], hour); track trackBySessionId($index, session)) {
+                <div class="session-card">
+                  <div class="session-subject">{{ session.matiere_id[1] }}</div>
+                  <div class="session-teacher">Prof. {{ session.enseignant_id[1] }}</div>
+                  <div class="session-time">
+                    {{ formatTime(session.start_datetime) }} - {{ formatTime(session.end_datetime) }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Week View -->
+  @if (currentView === 'week' && !loading && !error) {
+    <div class="week-view">
+      <div class="week-header">
+        @for (day of daysInView; track trackByDate($index, day)) {
+          <div class="day-header" [class.today]="isToday(day)">
+            <div class="day-name">{{ formatDisplayDate(day, 'EEE') }}</div>
+            <div class="day-date">{{ formatDisplayDate(day, 'd') }}</div>
+          </div>
+        }
+      </div>
+      <div class="week-body">
+        @for (day of daysInView; track trackByDate($index, day)) {
+          <div class="day-column" [class.today]="isToday(day)">
+            @for (session of getDaySessions(day); track trackBySessionId($index, session)) {
+              <div class="week-session">
+                <div class="session-time">
+                  {{ formatTime(session.start_datetime) }} - {{ formatTime(session.end_datetime) }}
+                </div>
+                <div class="session-subject">{{ session.matiere_id[1] }}</div>
+                <div class="session-teacher">{{ session.enseignant_id[1] }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Month View -->
+  @if (currentView === 'month' && !loading && !error) {
+    <div class="month-view">
+      <div class="month-header">
+        <div class="day-name">Mon</div>
+        <div class="day-name">Tue</div>
+        <div class="day-name">Wed</div>
+        <div class="day-name">Thu</div>
+        <div class="day-name">Fri</div>
+        <div class="day-name">Sat</div>
+        <div class="day-name">Sun</div>
+      </div>
+      @for (week of weeksInMonth; track trackByWeek($index, week)) {
+        <div class="month-week">
+          @for (day of week; track trackByDate($index, day)) {
+            <div class="month-day" 
+                 [class.not-current-month]="day.getMonth() !== currentDate.getMonth()"
+                 [class.today]="isToday(day)">
+              <div class="day-number">{{ day.getDate() }}</div>
+              <div class="day-sessions">
+                @for (session of getDaySessions(day); track trackBySessionId($index, session)) {
+                  <div class="month-session">
+                    {{ formatTime(session.start_datetime) }} {{ session.matiere_id[1] }}
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

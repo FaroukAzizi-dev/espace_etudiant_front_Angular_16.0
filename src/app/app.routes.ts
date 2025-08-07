@@ -6,6 +6,7 @@ import { ReclamationComponent } from './views/reclamation/reclamation.component'
 import { ListeReclamationsComponent } from './views/listereclamations/listereclamations/listereclamations.component';
 import { DocumentstageComponent } from './views/documentstage/documentstage.component';
 import { LettreformComponent } from './views/lettreform/lettreform.component';
+import { StudentScheduleComponent } from './views/studentschedule/studentschedule.component';
 export const routes: Routes = [
   { path: 'login', 
     component: LoginComponent 
@@ -27,7 +28,10 @@ export const routes: Routes = [
           { path: '', component: DocumentstageComponent }, 
           { path: 'lettreaffectation', component: LettreformComponent }
         ]
-      }
+      },
+      {
+        path: 'emploidetemps' , component: StudentScheduleComponent
+      },
     ]
   },
   { 

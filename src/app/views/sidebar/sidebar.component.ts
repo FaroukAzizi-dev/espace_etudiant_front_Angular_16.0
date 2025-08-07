@@ -1,17 +1,18 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 interface NavigationItem {
   name: string;
   icon: string;
-  href: string;
+  route: string;
   active: boolean;
 }
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule ,  RouterModule],
   templateUrl: './sidebar.component.html',
 
 })
@@ -23,39 +24,40 @@ export class SidebarComponent {
     {
       name: "Tableau de bord",
       icon: "home",
-      href: "/dashboard",
+      route: "/dashboard",
       active: true,
     },
     {
       name: "Planning de la semaine",
       icon: "calendar",
-      href: "#planning",
+      route: "/dashboard/emploidetemps",
       active: false,
     },
     {
       name: "Mes notes",
       icon: "filetext",
-      href: "#notes",
+      route: "#notes",
       active: false,
     },
     {
       name: "Consulter réclamation",
       icon: "inbox",
-      href: "/dashboard/listereclamation",
+      route: "/dashboard/listereclamation",
       active: false,
     },
     {
       name: "Faire une réclamation",
       icon: "messagesquare",
-      href: "/dashboard/reclamation",
+      route: "/dashboard/reclamation",
       active: false,
     },
     {
       name: "Document de Stage",
       icon: "messagesquare",
-      href: "/dashboard/documentstage",
+      route: "/dashboard/documentstage",
       active: false,
-    }
+    },
+    
   ];
 
   getSidebarClasses(): string {

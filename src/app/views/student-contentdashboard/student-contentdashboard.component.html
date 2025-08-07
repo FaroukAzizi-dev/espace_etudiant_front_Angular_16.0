@@ -1,3 +1,4 @@
+<!-- student-contentdashboard.component.html -->
 <div class="min-h-screen bg-gray-50">
   <div class="flex h-screen">
     <!-- Sidebar -->
@@ -14,8 +15,9 @@
       <!-- Dynamic content area -->
       <div class="flex-1 overflow-y-auto">
         <router-outlet></router-outlet>
-        <app-dashboard-content *ngIf="!router.url.includes('reclamation') 
-                                  && !router.url.includes('documentstage')"></app-dashboard-content>     
+        <!-- Only show dashboard content if no child route is active -->
+        <app-dashboard-content *ngIf="router.url === '/dashboard'"></app-dashboard-content>
+      </div>
     </div>
   </div>
 </div>

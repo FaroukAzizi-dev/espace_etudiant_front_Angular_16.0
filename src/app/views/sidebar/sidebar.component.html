@@ -36,8 +36,9 @@
           <div class="space-y-2">
             <a
               *ngFor="let item of navigationItems"
-              [href]="item.href"
-              [class]="getNavItemClasses(item)">
+              [routerLink]="item.route"
+              [class]="getNavItemClasses(item)"
+              routerLinkActive="bg-yellow-50 text-yellow-800 border border-yellow-200">
               <ng-container [ngSwitch]="item.icon">
                 <!-- Home Icon -->
                 <!-- Tableau de bord -->
