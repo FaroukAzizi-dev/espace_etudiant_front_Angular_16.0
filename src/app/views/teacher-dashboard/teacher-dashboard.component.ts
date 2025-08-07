@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../header/header.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
+import { HeaderComponent } from '../teacher-dashboard/teacher-header/teacher-header.component';
+import { SidebarComponent } from '../teacher-dashboard/teacher-sidebar/teacher-sidebar.component';
 import { TeacherContentComponent } from './teacher-content/teacher-content.component';
-
 @Component({
   selector: 'app-teacher-dashboard',
   standalone: true,

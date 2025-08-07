@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthServiceService } from '../../services/auth/auth-service.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -27,33 +28,27 @@ export class LoginComponent {
     });
   }
 
-  onSubmit(): void {
-    this.loginForm.markAllAsTouched();
+  getLogoPath(): string {
+    return '/assets/images/logo.png'; 
+  }
 
-    if (this.loginForm.invalid) {
-      console.warn('[LOGIN] Invalid form submission', this.loginForm.value);
-      return;
-    }
+  onSubmit(): void {
+    if (this.loginForm.invalid) return;
 
     this.isLoading = true;
     this.errorMessage = null;
 
-    const credentials = {
+    console.log('Tentative de connexion avec:', this.loginForm.value.username);
+
+    this.authService.login({
       login: this.loginForm.value.username,
       password: this.loginForm.value.password
-    };
-
-    console.log('[LOGIN] Attempting login with:', {
-      username: credentials.login,
-      password: '•••••••'
-    });
-
-    this.authService.login(credentials).subscribe({
-      next: () => {
+    }).subscribe({
+      next: (res) => {
         const userRole = this.authService.getUserRole();
-        console.log('[LOGIN] User role:', userRole);
-
-        switch (userRole) {
+        console.log('Rôle déterminé:', userRole);
+        
+        switch(userRole) {
           case 'admin':
             this.router.navigate(['/admin-dashboard']);
             break;
@@ -65,22 +60,12 @@ export class LoginComponent {
             this.router.navigate(['/student']);
             break;
         }
-
-        this.isLoading = false;
       },
       error: (err) => {
-        console.error('[LOGIN] Login failed:', err);
-        this.errorMessage = err.message || 'Identifiants incorrects ou problème de connexion';
+        console.error('Échec de la connexion:', err);
+        this.errorMessage = 'Invalid credentials or connection issue';
         this.isLoading = false;
       }
     });
-  }
-
-  ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
-      console.log('[LOGIN] Existing session detected - clearing');
-      this.authService.clearSession();
-      window.location.reload();
-    }
   }
 }
