@@ -1,0 +1,36 @@
+<form [formGroup]="absenceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+  <div>
+    <label>Étudiant</label>
+    <input type="text" 
+           formControlName="etudiant_id"
+           (input)="searchStudents($event.target.value)"
+           placeholder="Rechercher un étudiant">
+    <!-- Liste déroulante des étudiants -->
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <label>Heure de début</label>
+      <input type="datetime-local" formControlName="heure_debut">
+    </div>
+    <div>
+      <label>Heure de fin</label>
+      <input type="datetime-local" formControlName="heure_fin">
+    </div>
+  </div>
+
+  <div>
+    <label>Statut</label>
+    <select formControlName="justifiee">
+      <option value="non_justifiee">Non justifiée</option>
+      <option value="justifiee">Justifiée</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Motif (optionnel)</label>
+    <textarea formControlName="motif"></textarea>
+  </div>
+
+  <button type="submit" [disabled]="!absenceForm.valid">Enregistrer</button>
+</form>

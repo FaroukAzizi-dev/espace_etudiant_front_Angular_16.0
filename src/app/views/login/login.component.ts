@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -26,6 +26,10 @@ export class LoginComponent {
       username: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
+  }
+
+  getLogoPath(): string {
+    return '/assets/images/logo.png'; 
   }
 
   onSubmit(): void {
@@ -44,7 +48,6 @@ export class LoginComponent {
         const userRole = this.authService.getUserRole();
         console.log('Rôle déterminé:', userRole);
         
-        // Redirection selon le rôle retourné par Odoo
         switch(userRole) {
           case 'admin':
             this.router.navigate(['/admin-dashboard']);
@@ -60,7 +63,7 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Échec de la connexion:', err);
-        this.errorMessage = 'Identifiants incorrects ou problème de connexion';
+        this.errorMessage = 'Invalid credentials or connection issue';
         this.isLoading = false;
       }
     });

@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoteFormComponent } from '../note-form/note-form.component';
+import { TeacherAbsencesComponent } from '../teacher-absences/teacher-absences.component';
 
 @Component({
   selector: 'app-teacher-content',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NoteFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, NoteFormComponent, TeacherAbsencesComponent],
   template: `
     <main class="flex-1 overflow-y-auto p-6 bg-background">
       <div class="mx-auto max-w-7xl space-y-8">
@@ -16,7 +17,7 @@ import { NoteFormComponent } from '../note-form/note-form.component';
             <div>
               <h1 class="mb-2 text-2xl font-bold">Bienvenue, Professeur!</h1>
               <p class="text-lg text-primary-foreground">
-                Gestion de vos cours et étudiants.
+                Gestion de vos cours, notes et absences.
               </p>
             </div>
             <div class="hidden md:block">
@@ -46,6 +47,14 @@ import { NoteFormComponent } from '../note-form/note-form.component';
               : 'text-muted-foreground hover:text-foreground'"
             class="px-4 py-2 text-sm transition-colors">
             Gestion des Notes
+          </button>
+          <button 
+            (click)="activeTab = 'absences'"
+            [class]="activeTab === 'absences' 
+              ? 'border-b-2 border-primary text-primary font-medium' 
+              : 'text-muted-foreground hover:text-foreground'"
+            class="px-4 py-2 text-sm transition-colors">
+            Gestion des Absences
           </button>
           <button 
             (click)="activeTab = 'stats'"
@@ -99,9 +108,14 @@ import { NoteFormComponent } from '../note-form/note-form.component';
             </div>
           </section>
 
+          <!-- Onglet Gestion des Absences -->
+          <section *ngSwitchCase="'absences'" class="space-y-6">
+            <app-teacher-absences></app-teacher-absences>
+          </section>
+
           <!-- Onglet Statistiques -->
           <section *ngSwitchCase="'stats'" class="space-y-6">
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
               <div class="rounded-lg border border-border bg-card">
                 <div class="p-6 pb-2">
                   <h3 class="text-sm font-medium text-muted-foreground">Cours Actifs</h3>
@@ -122,12 +136,46 @@ import { NoteFormComponent } from '../note-form/note-form.component';
               </div>
               <div class="rounded-lg border border-border bg-card">
                 <div class="p-6 pb-2">
-                  <h3 class="text-sm font-medium text-muted-foreground">Moyenne Générale</h3>
+                  <h3 class="text-sm font-medium text-muted-foreground">Notes Moyennes</h3>
                 </div>
                 <div class="px-6 pb-6">
                   <div class="text-2xl font-bold text-foreground">0.00</div>
-                  <p class="mt-1 text-xs text-muted-foregreen">Moyenne de vos étudiants</p>
+                  <p class="mt-1 text-xs text-muted-foreground">Moyenne de vos étudiants</p>
                 </div>
+              </div>
+              <div class="rounded-lg border border-border bg-card">
+                <div class="p-6 pb-2">
+                  <h3 class="text-sm font-medium text-muted-foreground">Absences ce mois</h3>
+                </div>
+                <div class="px-6 pb-6">
+                  <div class="text-2xl font-bold text-foreground">0</div>
+                  <p class="mt-1 text-xs text-muted-foreground">Absences enregistrées</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Graphiques et statistiques détaillées -->
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div class="rounded-lg border border-border bg-card p-6">
+                <h3 class="text-lg font-medium text-foreground mb-4">Évolution des absences</h3>
+                <div class="text-muted-foreground text-sm">
+                  <p>Graphique des absences par semaine à venir...</p>
+                </div>
+              </div>
+              
+              <div class="rounded-lg border border-border bg-card p-6">
+                <h3 class="text-lg font-medium text-foreground mb-4">Répartition des notes</h3>
+                <div class="text-muted-foreground text-sm">
+                  <p>Graphique de répartition des notes à venir...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top étudiants avec le plus d'absences -->
+            <div class="rounded-lg border border-border bg-card p-6">
+              <h3 class="text-lg font-medium text-foreground mb-4">Étudiants avec le plus d'absences</h3>
+              <div class="text-muted-foreground text-sm">
+                <p>Liste des étudiants avec statistiques d'absences à venir...</p>
               </div>
             </div>
           </section>
@@ -138,5 +186,5 @@ import { NoteFormComponent } from '../note-form/note-form.component';
   styles: []
 })
 export class TeacherContentComponent {
-  activeTab: 'courses' | 'grades' | 'stats' = 'courses';
+  activeTab: 'courses' | 'grades' | 'absences' | 'stats' = 'courses';
 }

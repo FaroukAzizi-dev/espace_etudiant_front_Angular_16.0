@@ -35,7 +35,6 @@ export class AuthServiceService {
     return this.http.post(environment.odooApiUrl, body, { headers }).pipe(
       tap((response: any) => {
         if (response?.result?.uid) {
-          console.log('Réponse complète du serveur:', response);
           this.isAuthenticated.set(true);
           this.userData.set(response.result);
           localStorage.setItem('odoo_user', JSON.stringify(response.result));
@@ -52,11 +51,14 @@ export class AuthServiceService {
 
   getUserRole(): string {
     const user = this.getCurrentUser();
-    console.log('Données utilisateur pour rôle:', user);
-
-    // Utilise directement le champ 'role' du contrôleur Odoo
     return user.role || 'student';
   }
+
+  getProfileImage(): string {
+    const user = this.getCurrentUser();
+    // Retourne directement l'URL complète de l'image si elle existe
+    return user?.image || '/assets/images/default-avatar.png';
+}
 
   logout(): void {
     this.isAuthenticated.set(false);
@@ -72,4 +74,4 @@ export class AuthServiceService {
   getCurrentUser() {
     return this.userData() || JSON.parse(localStorage.getItem('odoo_user') || '{}');
   }
-}
+} 

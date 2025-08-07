@@ -1,0 +1,82 @@
+<div class="p-6">
+  <h2 class="text-2xl font-bold mb-6">Mes Matières Enseignées</h2>
+
+  <div *ngIf="isLoading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+  </div>
+
+  <div *ngIf="!isLoading && subjects.length === 0" class="bg-card rounded-lg p-6 text-center">
+    <p class="text-muted-foreground">Aucune matière assignée</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let subject of subjects" 
+         class="bg-card rounded-lg shadow-sm border border-border p-6 cursor-pointer hover:shadow-md transition-shadow"
+         (click)="showSubjectDetails(subject.id)">
+      <h3 class="text-lg font-semibold">{{ subject.name }}</h3>
+      <p class="text-sm text-muted-foreground mt-1">{{ subject.code }}</p>
+      <div class="mt-4 flex justify-between items-center">
+        <span class="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full">
+          {{ subject.volume_horaire }}h
+        </span>
+        <span class="text-sm bg-isp-yellow/10 text-isp-yellow px-3 py-1 rounded-full">
+          Coeff. {{ subject.coefficient }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Détails de la matière sélectionnée -->
+  <div *ngIf="selectedSubject" class="mt-8 bg-card rounded-lg border border-border p-6">
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 class="text-xl font-bold">{{ selectedSubject.name }}</h3>
+        <p class="text-muted-foreground">{{ selectedSubject.code }}</p>
+      </div>
+      <button (click)="selectedSubject = null" class="text-muted-foreground hover:text-foreground">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h4 class="font-medium mb-2">Description</h4>
+        <p class="text-sm text-muted-foreground">{{ selectedSubject.description || 'Aucune description disponible' }}</p>
+        
+        <h4 class="font-medium mt-4 mb-2">Informations</h4>
+        <div class="space-y-2 text-sm">
+          <div class="flex">
+            <span class="text-muted-foreground w-32">Semestre:</span>
+            <span>Semestre {{ selectedSubject.semestre }}</span>
+          </div>
+          <div class="flex">
+            <span class="text-muted-foreground w-32">Volume horaire:</span>
+            <span>{{ selectedSubject.volume_horaire }} heures</span>
+          </div>
+          <div class="flex">
+            <span class="text-muted-foreground w-32">Coefficient:</span>
+            <span>{{ selectedSubject.coefficient }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-medium mb-2">Emploi du temps</h4>
+        <div *ngIf="subjectSchedule.length > 0" class="space-y-2">
+          <div *ngFor="let session of subjectSchedule" class="bg-background p-3 rounded-lg">
+            <div class="flex justify-between">
+              <span class="font-medium">{{ session.day }}</span>
+              <span class="text-sm text-muted-foreground">{{ session.start_time }} - {{ session.end_time }}</span>
+            </div>
+            <div class="text-sm text-muted-foreground mt-1">{{ session.classroom }}</div>
+          </div>
+        </div>
+        <p *ngIf="subjectSchedule.length === 0" class="text-sm text-muted-foreground">
+          Aucun horaire programmé pour cette matière
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
