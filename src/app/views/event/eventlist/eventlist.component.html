@@ -1,0 +1,54 @@
+<!-- src/app/modules/student-life/components/event-list/event-list.component.html -->
+<div class="event-container">
+  <!-- Loading Indicator -->
+  @if (isLoading) {
+    <div class="loading-spinner">
+      <div class="spinner-border text-primary spinner" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Content when loaded -->
+  @if (!isLoading) {
+    <div>
+      <h2 class="section-title">Événements</h2>
+      
+      @if (events.length === 0) {
+        <div class="no-events">
+          Aucun événement à afficher pour le moment.
+        </div>
+      }
+      
+      <div class="events-grid">
+        @for (event of events; track event.id) {
+          <div class="event-card">
+            @if (event.image) {
+              <img [src]="'data:image/png;base64,' + event.image" 
+                   class="event-image" 
+                   alt="{{event.name}}">
+            }
+            <div class="event-content">
+              <h5 class="event-title">{{event.name}}</h5>
+              <p class="event-meta">
+                <i class="bi bi-calendar-event"></i>
+                {{formatDate(event.start_date)}}
+                @if (event.end_date) {
+                  <span> - {{formatTime(event.end_date)}}</span>
+                }
+              </p>
+              @if (event.location) {
+                <p class="event-meta">
+                  <i class="bi bi-geo-alt"></i> {{event.location}}
+                </p>
+              }
+              @if (event.description) {
+                <p class="event-description">{{event.description}}</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

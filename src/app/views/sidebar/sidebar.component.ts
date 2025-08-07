@@ -21,44 +21,61 @@ export class SidebarComponent {
   @Output() onClose = new EventEmitter<void>();
 
   navigationItems: NavigationItem[] = [
-    {
-      name: "Tableau de bord",
-      icon: "home",
-      route: "/dashboard",
-      active: true,
-    },
-    {
-      name: "Planning de la semaine",
-      icon: "calendar",
-      route: "/dashboard/emploidetemps",
-      active: false,
-    },
-    {
-      name: "Mes notes",
-      icon: "filetext",
-      route: "#notes",
-      active: false,
-    },
-    {
-      name: "Consulter réclamation",
-      icon: "inbox",
-      route: "/dashboard/listereclamation",
-      active: false,
-    },
-    {
-      name: "Faire une réclamation",
-      icon: "messagesquare",
-      route: "/dashboard/reclamation",
-      active: false,
-    },
-    {
-      name: "Document de Stage",
-      icon: "messagesquare",
-      route: "/dashboard/documentstage",
-      active: false,
-    },
-    
-  ];
+  {
+    name: "Tableau de bord",
+    icon: "home",
+    route: "/dashboard",
+    active: true,
+  },
+  {
+    name: "Planning de la semaine",
+    icon: "calendar",
+    route: "/dashboard/emploidetemps",
+    active: false,
+  },
+  {
+    name: "Mes notes",
+    icon: "filetext",
+    route: "#notes",
+    active: false,
+  },
+  {
+    name: "Consulter réclamation",
+    icon: "inbox",
+    route: "/dashboard/listereclamation",
+    active: false,
+  },
+  {
+    name: "Faire une réclamation",
+    icon: "messagesquare",
+    route: "/dashboard/reclamation",
+    active: false,
+  },
+  {
+    name: "Document de Stage",
+    icon: "document",
+    route: "/dashboard/documentstage",
+    active: false,
+  },
+  {
+    name: "Evenement",
+    icon: "event",
+    route: "/dashboard/evenements",
+    active: false,
+  },
+  {
+    name: "Offre d'emploi",
+    icon: "briefcase",
+    route: "/dashboard/offres-emploi",
+    active: false,
+  },
+  {
+    name: "Offre de stage",
+    icon: "laptop",
+    route: "/dashboard/offres-stage",
+    active: false,
+  }
+];
 
   getSidebarClasses(): string {
     return `fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50 

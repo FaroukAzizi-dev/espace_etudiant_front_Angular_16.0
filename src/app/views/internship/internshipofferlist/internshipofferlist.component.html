@@ -1,0 +1,58 @@
+<!-- internshipofferlist.component.html -->
+<div class="internship-container">
+  <h2>Internship Opportunities</h2>
+  
+  <!-- Search Bar -->
+  <div class="search-box">
+    <input type="text" [(ngModel)]="searchTerm" 
+           placeholder="Search by title or company...">
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading offers...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-state">
+    {{ error }}
+    <button (click)="loadOffers()">Retry</button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && filteredOffers.length === 0" class="empty-state">
+    No internship offers available
+  </div>
+
+  <!-- Offers List -->
+  <div *ngIf="!loading && !error" class="offers-list">
+    <div *ngFor="let offer of filteredOffers" class="offer-card">
+      <div class="offer-header">
+        <h3>{{ offer.title }}</h3>
+        <span *ngIf="offer.company_id" class="company">
+          {{ offer.company_id[1] }}
+        </span>
+      </div>
+      
+      <div class="offer-details">
+        <span *ngIf="offer.duration" class="duration">
+          {{ offer.duration }}
+        </span>
+        <span *ngIf="offer.remuneration" class="remuneration">
+          {{ offer.remuneration }}
+        </span>
+      </div>
+      
+      <p class="description">
+        {{ stripHtml(offer.description) | slice:0:160 }}...
+      </p>
+      
+      <div class="offer-footer">
+        <span *ngIf="offer.deadline" class="deadline">
+          Apply by: {{ formatDate(offer.deadline) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
