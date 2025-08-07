@@ -1,0 +1,152 @@
+<div class="bg-white rounded-lg shadow-md p-6">
+  <h3 class="text-lg font-semibold text-gray-800 mb-6">Ajouter une Note</h3>
+  
+  <form [formGroup]="noteForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Student Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="relative">
+        <label for="etudiant_identifiant" class="block text-sm font-medium text-gray-700 mb-2">
+          Identifiant Étudiant *
+        </label>
+        <input
+          id="etudiant_identifiant"
+          type="text"
+          formControlName="etudiant_identifiant"
+          placeholder="Saisir l'identifiant..."
+          class="w-full px-3 py-2 border rounded-md"
+          [class.border-red-500]="noteForm.get('etudiant_identifiant')?.invalid && (noteForm.get('etudiant_identifiant')?.touched || formSubmitted)"
+        >
+        <div *ngIf="noteForm.get('etudiant_identifiant')?.invalid && (noteForm.get('etudiant_identifiant')?.touched || formSubmitted)" class="text-red-500 text-xs mt-1">
+          Ce champ est obligatoire
+        </div>
+        
+        <div *ngIf="students.length > 0" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div *ngFor="let student of students" 
+               (click)="selectStudent(student)"
+               class="px-3 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+            <div class="font-medium">{{ student.identifiant }}</div>
+            <div class="text-sm text-gray-500">{{ student.name }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject Section -->
+      <div class="relative">
+        <label for="matiere_code" class="block text-sm font-medium text-gray-700 mb-2">
+          Code Matière *
+        </label>
+        <input
+          id="matiere_code"
+          type="text"
+          formControlName="matiere_code"
+          placeholder="Saisir le code matière..."
+          class="w-full px-3 py-2 border rounded-md"
+          [class.border-red-500]="noteForm.get('matiere_code')?.invalid && (noteForm.get('matiere_code')?.touched || formSubmitted)"
+        >
+        <div *ngIf="noteForm.get('matiere_code')?.invalid && (noteForm.get('matiere_code')?.touched || formSubmitted)" class="text-red-500 text-xs mt-1">
+          Ce champ est obligatoire
+        </div>
+        
+        <div *ngIf="subjects.length > 0" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          <div *ngFor="let subject of subjects" 
+               (click)="selectSubject(subject)"
+               class="px-3 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+            <div class="font-medium">{{ subject.code }}</div>
+            <div class="text-sm text-gray-500">{{ subject.name }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grades Section -->
+    <div class="border-t pt-6" *ngIf="showFields.cc || showFields.tp || showFields.examen">
+      <h4 class="text-md font-medium text-gray-800 mb-4">Saisie des Notes</h4>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div *ngIf="showFields.cc">
+          <label for="note_cc" class="block text-sm font-medium text-gray-700 mb-2">
+            Note Contrôle Continu (CC)
+          </label>
+          <input
+            id="note_cc"
+            type="number"
+            formControlName="note_cc"
+            min="0"
+            max="20"
+            step="0.01"
+            class="w-full px-3 py-2 border rounded-md"
+            [class.border-red-500]="noteForm.get('note_cc')?.invalid && (noteForm.get('note_cc')?.touched || formSubmitted)"
+          >
+          <div *ngIf="noteForm.get('note_cc')?.invalid && (noteForm.get('note_cc')?.touched || formSubmitted)" class="text-red-500 text-xs mt-1">
+            La note doit être entre 0 et 20
+          </div>
+        </div>
+
+        <div *ngIf="showFields.tp">
+          <label for="note_tp" class="block text-sm font-medium text-gray-700 mb-2">
+            Note Travaux Pratiques (TP)
+          </label>
+          <input
+            id="note_tp"
+            type="number"
+            formControlName="note_tp"
+            min="0"
+            max="20"
+            step="0.01"
+            class="w-full px-3 py-2 border rounded-md"
+            [class.border-red-500]="noteForm.get('note_tp')?.invalid && (noteForm.get('note_tp')?.touched || formSubmitted)"
+          >
+          <div *ngIf="noteForm.get('note_tp')?.invalid && (noteForm.get('note_tp')?.touched || formSubmitted)" class="text-red-500 text-xs mt-1">
+            La note doit être entre 0 et 20
+          </div>
+        </div>
+
+        <div *ngIf="showFields.examen">
+          <label for="note_examen" class="block text-sm font-medium text-gray-700 mb-2">
+            Note Examen Final
+          </label>
+          <input
+            id="note_examen"
+            type="number"
+            formControlName="note_examen"
+            min="0"
+            max="20"
+            step="0.01"
+            class="w-full px-3 py-2 border rounded-md"
+            [class.border-red-500]="noteForm.get('note_examen')?.invalid && (noteForm.get('note_examen')?.touched || formSubmitted)"
+          >
+          <div *ngIf="noteForm.get('note_examen')?.invalid && (noteForm.get('note_examen')?.touched || formSubmitted)" class="text-red-500 text-xs mt-1">
+            La note doit être entre 0 et 20
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debug (optionnel) -->
+    <div *ngIf="false" class="p-4 bg-gray-100 rounded">
+      <pre>Form valid: {{noteForm.valid}}</pre>
+      <pre>Form values: {{noteForm.value | json}}</pre>
+      <pre>Form errors: {{noteForm.errors | json}}</pre>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-3 pt-6 border-t">
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+      >
+        Réinitialiser
+      </button>
+      
+      <button
+        type="submit"
+        [disabled]="isLoading"
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border rounded-md hover:bg-blue-700 disabled:opacity-50"
+      >
+        <span *ngIf="isLoading">Enregistrement...</span>
+        <span *ngIf="!isLoading">Enregistrer la Note</span>
+      </button>
+    </div>
+  </form>
+</div>

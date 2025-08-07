@@ -3,10 +3,11 @@
     "target": "http://localhost:8070",
     "secure": false,
     "changeOrigin": true,
+    "pathRewrite": { "^/web": "" },
     "logLevel": "debug",
     "cookieDomainRewrite": "localhost"
   },
-    "/api": {
+  "/api": {
     "target": "http://localhost:8070",
     "secure": false,
     "changeOrigin": true,

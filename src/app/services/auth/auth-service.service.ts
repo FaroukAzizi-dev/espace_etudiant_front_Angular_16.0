@@ -1,78 +1,66 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, catchError, tap, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthServiceService {
-  private dbName = 'db_pacu-6csq-3ta6';
-
-  isAuthenticated = signal<boolean>(false);
+  private isAuthenticated = signal<boolean>(false);
+  private userData = signal<any>(null);
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {
-
-    const session = localStorage.getItem('odoo_session');
-    this.isAuthenticated.set(!!session);
+    const storedUser = localStorage.getItem('odoo_user');
+    if (storedUser) {
+      this.isAuthenticated.set(true);
+      this.userData.set(JSON.parse(storedUser));
+    }
   }
 
-  login(credentials: { login: string, password: string }): Observable<any> {
+  login(credentials: { login: string; password: string }): Observable<any> {
     const loginUrl = '/web/session/authenticate';
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
 
     const body = {
-      jsonrpc: "2.0",
+      jsonrpc: '2.0',
       params: {
-        db: this.dbName,
+        db: environment.odooDb,
         login: credentials.login,
         password: credentials.password
       }
     };
 
-    const options = {
-      headers: headers,
-      withCredentials: true
-    };
-
-    console.log('%c[AUTH] Login attempt initiated', 'color: #4CAF50; font-weight: bold');
-    console.log('[AUTH] Request payload:', body);
-
-    return this.http.post(loginUrl, body, options).pipe(
+    return this.http.post(loginUrl, body, { headers, withCredentials: true }).pipe(
       tap((response: any) => {
-        if (response?.result) {
-          console.log('%c[AUTH] Login successful', 'color: #4CAF50; font-weight: bold', response);
+        if (response?.result?.uid) {
+          console.log('[AUTH] Login successful:', response);
           this.isAuthenticated.set(true);
-          localStorage.setItem('odoo_session', JSON.stringify(response));
+          this.userData.set(response.result);
+          localStorage.setItem('odoo_user', JSON.stringify(response.result));
         } else {
-          console.warn('%c[AUTH] Login failed - no result in response', 'color: #FF9800; font-weight: bold', response);
+          throw new Error(response.error?.message || 'Authentication failed');
         }
       }),
-      catchError(error => {
-        console.error('%c[AUTH] Login error', 'color: #F44336; font-weight: bold', error);
-        return this.handleError(error);
-      })
+      catchError(error => this.handleError(error))
     );
   }
 
-
   logout(): Observable<any> {
-    console.log('%c[AUTH] Logout initiated', 'color: #2196F3; font-weight: bold');
-    const logouturl = '/web/session/logout';
-
-    return this.http.post(logouturl, {}, { withCredentials: true }).pipe(
+    const logoutUrl = '/web/session/logout';
+    return this.http.post(logoutUrl, {}, { withCredentials: true }).pipe(
       tap(() => {
-        console.log('%c[AUTH] Logout successful', 'color: #2196F3; font-weight: bold');
         this.clearSession();
       }),
       catchError(err => {
-        console.error('%c[AUTH] Logout API failed', 'color: #F44336; font-weight: bold', err);
-        console.warn("Logout API failed, but session was cleared locally.");
+        console.error('[AUTH] Logout failed:', err);
         this.clearSession();
         return of(null);
       })
@@ -81,8 +69,9 @@ export class AuthServiceService {
 
   clearSession(): void {
     this.isAuthenticated.set(false);
-    localStorage.removeItem('odoo_session');
-    // Clear all cookies (for your domain)
+    this.userData.set(null);
+    localStorage.removeItem('odoo_user');
+    // Optional cookie cleanup for Odoo
     document.cookie.split(';').forEach(cookie => {
       const eqPos = cookie.indexOf('=');
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
@@ -91,43 +80,40 @@ export class AuthServiceService {
   }
 
   isLoggedIn(): boolean {
-    return this.isAuthenticated();
+    return this.isAuthenticated() || !!localStorage.getItem('odoo_user');
+  }
+
+  getCurrentUser() {
+    return this.userData() || JSON.parse(localStorage.getItem('odoo_user') || '{}');
+  }
+
+  getUserRole(): string {
+    const user = this.getCurrentUser();
+    return user.role || 'student';
+  }
+
+  getUserName(): string {
+    return this.getCurrentUser()?.name || '';
+  }
+
+  getUserId(): number {
+    return this.getCurrentUser()?.uid || 0;
+  }
+
+  getUserEmail(): string {
+    return this.getCurrentUser()?.username || '';
   }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Client-side error: ${error.error.message}`;
-      console.error('%c[AUTH] Client-side error', 'color: #F44336; font-weight: bold', error.error);
     } else if (error.error?.error?.data?.message) {
       errorMessage = `Odoo error: ${error.error.error.data.message}`;
-      console.error('%c[AUTH] Odoo server error', 'color: #F44336; font-weight: bold', error.error.error.data.message);
     } else {
       errorMessage = `HTTP error: ${error.status} - ${error.message}`;
-      console.error('%c[AUTH] HTTP error', 'color: #F44336; font-weight: bold', error.status, error.message);
     }
+    console.error('[AUTH] Error:', errorMessage);
     return throwError(() => new Error(errorMessage));
   }
-
-
-  getSessionData(): any {
-    const session = localStorage.getItem('odoo_session');
-    return session ? JSON.parse(session) : null;
-  }
-
-  getUserName(): string {
-    const session = this.getSessionData();
-    return session?.result?.name || '';
-  }
-
-  getUserId(): number {
-    const session = this.getSessionData();
-    return session?.result?.uid || 0;
-  }
-
-  getUserEmail(): string {
-    const session = this.getSessionData();
-    return session?.result?.username || '';
-  }
-
 }
