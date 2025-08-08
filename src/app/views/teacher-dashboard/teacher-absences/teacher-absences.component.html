@@ -1,0 +1,104 @@
+<div class="space-y-8">
+  <!-- Formulaire d'ajout d'absence -->
+  <div class="bg-card border border-border rounded-lg p-6">
+    <h2 class="text-xl font-bold mb-4">Enregistrer une absence</h2>
+    
+    <form [formGroup]="absenceForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Champ Étudiant -->
+      <div class="space-y-2 relative">
+        <label class="block text-sm font-medium">Étudiant *</label>
+        <input type="text" 
+               class="w-full p-2 border rounded"
+               formControlName="etudiant_identifiant"
+               (input)="searchStudents($any($event.target).value)"
+               placeholder="Rechercher par nom ou identifiant"
+               autocomplete="off">
+        
+        <!-- Liste des étudiants trouvés -->
+        <div *ngIf="showStudentList" class="absolute z-10 w-full mt-1 border rounded bg-white shadow-lg max-h-60 overflow-auto">
+          <ul>
+            <li *ngFor="let student of students" 
+                class="p-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+                (click)="selectStudent(student)">
+              <div class="font-medium">{{ student.name }}</div>
+              <div class="text-sm text-gray-500">{{ student.identifiant }}</div>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="absenceForm.get('etudiant_identifiant')?.hasError('required') && absenceForm.get('etudiant_identifiant')?.touched" 
+             class="text-red-500 text-xs mt-1">
+          Ce champ est obligatoire
+        </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium">Date et heure de début *</label>
+          <input type="datetime-local" 
+                 class="w-full p-2 border rounded"
+                 formControlName="heure_debut"
+                 (change)="validateDate('heure_debut')">
+          <div *ngIf="absenceForm.get('heure_debut')?.hasError('invalidDate')" 
+               class="text-red-500 text-xs mt-1">
+            Date invalide
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="block text-sm font-medium">Date et heure de fin *</label>
+          <input type="datetime-local" 
+                 class="w-full p-2 border rounded"
+                 formControlName="heure_fin"
+                 (change)="validateDate('heure_fin')">
+          <div *ngIf="absenceForm.get('heure_fin')?.hasError('invalidDate')" 
+               class="text-red-500 text-xs mt-1">
+            Date invalide
+          </div>
+        </div>
+      </div>
+
+      <!-- Statut et motif -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium">Statut *</label>
+          <select class="w-full p-2 border rounded" formControlName="justifiee">
+            <option value="non_justifiee">Non justifiée</option>
+            <option value="justifiee">Justifiée</option>
+          </select>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="block text-sm font-medium">Motif (optionnel)</label>
+          <textarea class="w-full p-2 border rounded" 
+                    formControlName="motif"
+                    rows="2"></textarea>
+        </div>
+      </div>
+
+      <!-- Bouton de soumission -->
+      <div class="pt-2">
+        <button type="submit" 
+                class="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark disabled:opacity-50 transition-colors"
+                [disabled]="!absenceForm.valid || isLoading">
+          <span *ngIf="!isLoading">Enregistrer l'absence</span>
+          <span *ngIf="isLoading" class="flex items-center justify-center">
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Enregistrement...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Liste des absences récentes -->
+  <div class="bg-card border border-border rounded-lg p-6">
+    <h2 class="text-xl font-bold mb-4">Absences récentes</h2>
+    <div class="text-sm text-muted-foreground">
+      <p>La liste des absences apparaîtra ici...</p>
+    </div>
+  </div>
+</div>

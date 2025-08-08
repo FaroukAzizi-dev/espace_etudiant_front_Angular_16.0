@@ -1,5 +1,6 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AuthServiceService } from '../../../services/auth/auth-service.service';
 
 @Component({
   selector: 'app-header',
@@ -14,41 +15,102 @@ import { CommonModule } from '@angular/common';
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+
         <div class="flex items-center">
-          <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-3">
-            <span class="text-primary-foreground font-bold text-sm">ISP</span>
+          <div class="relative">
+            <img [src]="getLogoPath()"
+                  alt="School Logo"
+                  class="h-12 w-auto mr-3 object-contain"
+                 (load)="logoLoaded = true"
+                 (error)="handleImageError()" />
+                     
+            <div *ngIf="!logoLoaded" class="absolute inset-0 flex items-center justify-center">
+              <svg class="h-12 w-auto" viewBox="0 0 100 50" preserveAspectRatio="xMidYMid meet">
+                <rect width="100" height="50" rx="5" fill="#3b82f6"/>
+                <text x="50" y="30" font-family="Arial" font-size="20" fill="white"
+                       text-anchor="middle" dominant-baseline="middle">LOGO</text>
+              </svg>
+            </div>
           </div>
-          <div class="hidden sm:block">
-            <h1 class="text-lg font-bold text-foreground">ISP TED University</h1>
-          </div>
+                  
+          <span class="text-xl font-bold text-foreground hidden sm:inline">ISP TED University</span>
         </div>
       </div>
 
-      <div class="flex-1 text-center">
-        <h2 class="text-lg font-semibold text-foreground">Tableau de Bord Enseignant</h2>
+      <div class="flex-1 text-center hidden md:block">
+        <h2 class="text-lg font-semibold text-foreground">Tableau de Bord</h2>
       </div>
 
       <div class="flex items-center space-x-3">
-        <button class="relative hover:bg-accent p-2 rounded-md transition-colors">
-          <svg class="h-5 w-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19H6.5A2.5 2.5 0 0 1 4 16.5v-9A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5H11z"/>
-          </svg>
-          <span class="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full border-2 border-background"></span>
-        </button>
-
-        <div class="relative">
-          <button class="relative h-9 w-9 rounded-full hover:bg-accent p-1 transition-colors">
-            <div class="h-8 w-8 bg-accent text-accent-foreground text-sm font-medium rounded-full flex items-center justify-center">
-              PR
-            </div>
-          </button>
+        <div class="flex items-center space-x-2">
+          <div class="relative">
+            <img [src]="userImage"
+                  alt="User Profile"
+                  class="h-10 w-10 rounded-full object-cover border-2 border-isp-yellow"
+                 (error)="onImageError()">
+          </div>
+          <div class="text-right hidden sm:block">
+            <p class="text-sm font-medium text-foreground">{{ userName }}</p>
+            <p class="text-xs text-muted-foreground capitalize">{{ userRole }}</p>
+          </div>
         </div>
       </div>
     </header>
   `,
-  styles: []
+  styles: [`
+    img {
+      max-height: 60px;
+      transition: all 0.3s ease;
+    }
+    img:hover {
+      transform: scale(1.05);
+    }
+  `]
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   @Output() onMenuClick = new EventEmitter<void>();
+  logoLoaded = false;
+  userName = '';
+  userRole = '';
+  userImage = '/assets/images/default-avatar.png';
+
+  constructor(
+    private authService: AuthServiceService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit() {
+    this.loadUserData();
+  }
+
+  loadUserData() {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.userName = user.name || 'Utilisateur';
+      this.userRole = user.role || 'user';
+      
+      // Vérification que l'image est bien une URL data:image valide
+      if (user.image && user.image.startsWith('data:image')) {
+        this.userImage = user.image;
+      } else {
+        this.userImage = '/assets/images/default-avatar.png';
+      }
+      
+      // Déclencher manuellement la détection de changements
+      this.cdr.detectChanges();
+    }
+  }
+
+  onImageError(): void {
+    this.userImage = '/assets/images/default-avatar.png';
+    this.cdr.detectChanges();
+  }
+
+  getLogoPath(): string {
+    return '/assets/images/logo2.png';
+  }
+
+  handleImageError(): void {
+    this.logoLoaded = false;
+  }
 }

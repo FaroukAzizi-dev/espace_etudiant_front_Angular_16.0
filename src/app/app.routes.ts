@@ -9,6 +9,14 @@ import { TeacherSubjectsComponent } from './views/teacher-dashboard/teacher-subj
 import { TeacherAbsencesComponent } from './views/teacher-dashboard/teacher-absences/teacher-absences.component';
 import { NoteFormComponent } from './views/teacher-dashboard/note-form/note-form.component';
 import { TeacherScheduleComponent } from './views/teacher-dashboard/teacher-schedule/teacher-schedule.component';
+import { ReclamationComponent } from './views/reclamation/reclamation.component';
+import { ListeReclamationsComponent } from './views/listereclamations/listereclamations/listereclamations.component';
+import { DocumentstageComponent } from './views/documentstage/documentstage.component';
+import { LettreformComponent } from './views/lettreform/lettreform.component';
+import { StudentScheduleComponent } from './views/studentschedule/studentschedule.component';
+import { EventListComponent } from './views/event/eventlist/eventlist.component';
+import { InternshipOfferListComponent } from './views/internship/internshipofferlist/internshipofferlist.component';
+import { DashboardContentComponent } from './views/dashboardcontent/dashboardcontent.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -24,28 +32,37 @@ export const routes: Routes = [
     component: TeacherDashboardComponent,
     canActivate: [authGuard('teacher')],
     children: [
-      // Route par défaut - affiche le contenu principal du dashboard
       { path: '', component: TeacherContentComponent },
-      
-      // Route pour les matières
       { path: 'subjects', component: TeacherSubjectsComponent },
       { path: 'absences', component: TeacherAbsencesComponent },
       { path: 'grades', component: NoteFormComponent },
       { path: 'schedule', component: TeacherScheduleComponent },
-      
-      // Ajoutez d'autres routes enfant au besoin
-      // { path: 'grades', component: TeacherGradesComponent },
-      // { path: 'absences', component: TeacherAbsencesComponent },
     ]
   },
   
   {
     path: 'student',
     component: StudentDashboardComponent,
-    canActivate: [authGuard('student')]
+    canActivate: [authGuard('student')],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { 
+        path: 'dashboard',
+        children: [
+          { path: '', component: DashboardContentComponent }, // Main dashboard view
+          { path: 'reclamation', component: ReclamationComponent },
+          { path: 'listereclamation', component: ListeReclamationsComponent },
+          { path: 'documentstage', component: DocumentstageComponent },
+          { path: 'documentstage/lettreaffectation', component: LettreformComponent },
+          { path: 'emploidetemps', component: StudentScheduleComponent },
+          { path: 'evenements', component: EventListComponent },
+          { path: 'offres-stage', component: InternshipOfferListComponent }
+        ]
+      }
+    ]
   },
   
-  // Routes de redirection pour compatibilité
+  // Compatibility redirects
   {
     path: 'admin',
     redirectTo: '/admin-dashboard',
@@ -56,7 +73,13 @@ export const routes: Routes = [
     redirectTo: '/enseignant-dashboard',
     pathMatch: 'full'
   },
+  {
+    path: 'dashboard', // For backward compatibility
+    redirectTo: '/student/dashboard',
+    pathMatch: 'full'
+  },
   
+  // Default routes
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

@@ -1,0 +1,144 @@
+<div class="bg-card border border-border rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold">Votre Emploi du Temps</h2>
+    <div class="flex space-x-2">
+      <button 
+        (click)="changeView('day')" 
+        [class.bg-primary]="currentView === 'day'"
+        class="px-3 py-1 rounded text-sm">
+        Jour
+      </button>
+      <button 
+        (click)="changeView('week')" 
+        [class.bg-primary]="currentView === 'week'"
+        class="px-3 py-1 rounded text-sm">
+        Semaine
+      </button>
+      <button 
+        (click)="changeView('month')" 
+        [class.bg-primary]="currentView === 'month'"
+        class="px-3 py-1 rounded text-sm">
+        Mois
+      </button>
+    </div>
+  </div>
+
+  <div class="flex justify-between items-center mb-4">
+    <button (click)="navigate('prev')" class="p-2 rounded hover:bg-gray-100">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    
+    <h3 class="text-lg font-medium">
+      @if (currentView === 'day') {
+        {{ datePipe.transform(currentDate, 'EEEE d MMMM yyyy') }}
+      } @else if (currentView === 'week') {
+        Semaine du {{ datePipe.transform(daysInView[0], 'd MMM') }} au {{ datePipe.transform(daysInView[6], 'd MMM yyyy') }}
+      } @else {
+        {{ datePipe.transform(currentDate, 'MMMM yyyy') }}
+      }
+    </h3>
+    
+    <button (click)="navigate('next')" class="p-2 rounded hover:bg-gray-100">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="flex justify-center py-8">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+    </div>
+  }
+
+  @if (error) {
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+      <p>{{ error }}</p>
+    </div>
+  }
+
+  <!-- Vue Jour -->
+  @if (currentView === 'day') {
+    <div class="border rounded-lg overflow-hidden">
+      <div class="grid grid-cols-1 divide-y">
+        @for (hour of hoursToDisplay; track hour) {
+          <div class="p-3">
+            <div class="font-medium mb-2">{{ hour }}:00 - {{ hour + 1 }}:00</div>
+            @for (session of getDaySessions(daysInView[0]); track session.id) {
+              @if (isCurrentHourSession(session, hour)) {
+                <div class="bg-blue-50 border border-blue-100 rounded p-2 mb-2">
+                  <div class="font-medium">{{ session.matiere_id[1] }}</div>
+                  <div class="text-sm">{{ session.classe_id[1] }}</div>
+                  <div class="text-sm text-blue-600">
+                    {{ formatTime(session.start_datetime) }} - {{ formatTime(session.end_datetime) }}
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Vue Semaine -->
+  @if (currentView === 'week') {
+    <div class="border rounded-lg overflow-hidden">
+      <div class="grid grid-cols-7 divide-x">
+        @for (day of daysInView; track day; let i = $index) {
+          <div>
+            <div class="p-2 text-center font-medium bg-gray-50">
+              <div>{{ datePipe.transform(day, 'EEE') }}</div>
+              <div>{{ datePipe.transform(day, 'd') }}</div>
+            </div>
+            <div class="h-64 overflow-y-auto">
+              @for (session of getDaySessions(day); track session.id) {
+                <div class="p-2 border-b">
+                  <div class="text-sm font-medium">{{ session.matiere_id[1] }}</div>
+                  <div class="text-xs">{{ formatTime(session.start_datetime) }} - {{ formatTime(session.end_datetime) }}</div>
+                  <div class="text-xs text-gray-500">{{ session.classe_id[1] }}</div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Vue Mois -->
+  @if (currentView === 'month') {
+    <div class="border rounded-lg overflow-hidden">
+      <div class="grid grid-cols-7 divide-x divide-y">
+        <div class="p-2 text-center font-medium bg-gray-50">Lun</div>
+        <div class="p-2 text-center font-medium bg-gray-50">Mar</div>
+        <div class="p-2 text-center font-medium bg-gray-50">Mer</div>
+        <div class="p-2 text-center font-medium bg-gray-50">Jeu</div>
+        <div class="p-2 text-center font-medium bg-gray-50">Ven</div>
+        <div class="p-2 text-center font-medium bg-gray-50">Sam</div>
+        <div class="p-2 text-center font-medium bg-gray-50">Dim</div>
+        
+        @for (week of weeksInMonth; track week) {
+          @for (day of week; track day) {
+            <div 
+              [class.bg-gray-50]="day.getMonth() !== currentDate.getMonth()"
+              class="h-24 p-1 border-b border-r overflow-hidden">
+              <div class="text-right text-sm mb-1">
+                {{ day.getDate() }}
+              </div>
+              <div class="overflow-y-auto h-16">
+                @for (session of getDaySessions(day); track session.id) {
+                  <div class="text-xs p-1 mb-1 bg-blue-50 rounded truncate">
+                    {{ formatTime(session.start_datetime) }} {{ session.matiere_id[1] }}
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>
