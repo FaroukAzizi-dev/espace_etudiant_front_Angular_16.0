@@ -1,23 +1,19 @@
-// src/app/modules/student-life/components/event-list/event-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../../../services/event/event.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Event } from '../../../services/event/event.service';
 
 @Component({
   selector: 'app-event-list',
   templateUrl: './eventlist.component.html',
   styleUrls: ['./eventlist.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule
-  ]
+  imports: [CommonModule, RouterModule, FormsModule]
 })
 export class EventListComponent implements OnInit {
-  events: any[] = []; // Changed from Event[] to any[] since we're combining all events
+  events: Event[] = [];
   isLoading = true;
 
   constructor(private eventService: EventService) { }
@@ -29,10 +25,23 @@ export class EventListComponent implements OnInit {
   loadAllEvents(): void {
     this.isLoading = true;
     
-    this.eventService.getAllEvents().subscribe({ 
+    this.eventService.getAllEvents().subscribe({
       next: (response) => {
+        console.log('Response complète:', response);
         this.events = response.events;
-        console.log(this.events);
+        
+        // Debug pour chaque événement
+        this.events.forEach((event, index) => {
+          console.log(`Événement ${index}:`, {
+            id: event.id,
+            name: event.name,
+            link: event.link,
+            linkType: typeof event.link,
+            linkEmpty: !event.link,
+            linkLength: event.link?.length
+          });
+        });
+        
         this.isLoading = false;
       },
       error: (error) => {
@@ -60,4 +69,6 @@ export class EventListComponent implements OnInit {
       minute: '2-digit'
     });
   }
+
+
 }

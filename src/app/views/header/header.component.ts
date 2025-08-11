@@ -26,12 +26,7 @@ import { AuthServiceService } from '../../services/auth/auth-service.service';
         </div>
       </div>
 
-      <!-- Center - Title -->
-      <div class="flex-1 text-center">
-        <h2 class="text-lg font-semibold text-gray-800 truncate">Bienvenue dans votre espace étudiant</h2>
-      </div>
-
-      <!-- Right side - Icons -->
+    <!-- Right side - Icons -->
       <div class="flex items-center space-x-3 ml-4">
         <!-- Notification bell -->
         <button class="relative hover:bg-yellow-50 p-2 rounded-md transition-colors">

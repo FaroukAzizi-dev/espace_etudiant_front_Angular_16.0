@@ -12,20 +12,14 @@ export class ScheduleService {
 
   getStudentSchedule(): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
       'Accept': 'application/json'
+      // 'Content-Type' n'est généralement pas nécessaire pour les requêtes GET
     });
 
-    console.log('[SCHEDULE] Making API call to /api/student-schedule');
+    console.log('[SCHEDULE] Making GET API call to /api/student-schedule');
     
-    // For Odoo JSON endpoints, we need to send a POST request with JSON data
-    const requestData = {
-      jsonrpc: "2.0",
-      method: "call",
-      params: {}
-    };
-    
-    return this.http.post('/api/student-schedule', requestData, { 
+    // Pour une requête GET, les paramètres doivent être passés dans l'URL
+    return this.http.get('/api/student-schedule', { 
       headers,
       withCredentials: true 
     }).pipe(
@@ -43,9 +37,11 @@ export class ScheduleService {
         console.error('[SCHEDULE] Error fetching student schedule:', error);
         
         if (error.status === 404) {
-          console.error('[SCHEDULE] API endpoint not found - check Odoo controller');
+          console.error('[SCHEDULE] API endpoint not found - check backend controller');
         } else if (error.status === 403) {
           console.error('[SCHEDULE] Authentication required');
+        } else if (error.status === 405) {
+          console.error('[SCHEDULE] Method not allowed - verify if endpoint accepts GET requests');
         }
         
         return throwError(() => error);

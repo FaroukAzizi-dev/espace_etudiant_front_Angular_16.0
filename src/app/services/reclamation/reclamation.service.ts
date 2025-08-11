@@ -35,7 +35,7 @@ export class ReclamationService {
 
   // ✅ Méthode pour obtenir le token CSRF
   private getCsrfToken(): Observable<string> {
-    return this.http.get('/web/session/get_session_info', {
+    return this.http.get('/web/etudiant/reclamations', {
       withCredentials: true
     }).pipe(
       tap((response: any) => {

@@ -66,7 +66,7 @@ export class SidebarComponent {
   {
     name: "Offre d'emploi",
     icon: "briefcase",
-    route: "/student/dashboard/offres-emploi",
+    route: "",
     active: false,
   },
   {
