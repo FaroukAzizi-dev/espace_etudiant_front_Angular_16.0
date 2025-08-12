@@ -34,7 +34,7 @@ export class SidebarComponent {
     active: false,
   },
   {
-    name: "Mes notes",
+    name: "Mes Absences",
     icon: "filetext",
     route: "",
     active: false,
@@ -66,7 +66,7 @@ export class SidebarComponent {
   {
     name: "Offre d'emploi",
     icon: "briefcase",
-    route: "",
+    route: "/student/dashboard/offre-emploi",
     active: false,
   },
   {

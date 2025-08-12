@@ -1,30 +1,22 @@
 <div class="event-container">
-  <!-- Indicateur de chargement -->
-  @if (isLoading) {
-  <div class="loading-spinner">
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-spinner">
     <div class="spinner" role="status"></div>
     <span>Chargement des événements...</span>
   </div>
-  }
 
-  <!-- Contenu une fois chargé -->
-  @if (!isLoading) {
-  <div class="events-content">
+  <!-- Content when loaded -->
+  <div *ngIf="!isLoading" class="events-content">
     <h2 class="section-title">Événements à venir</h2>
 
-    @if (events.length === 0) {
-    <div class="no-events">
+    <div *ngIf="events.length === 0" class="no-events">
       <i class="bi bi-calendar-x"></i>
       Aucun événement à afficher pour le moment.
     </div>
-    }
 
     <div class="events-grid">
-      @for (event of events; track event.id) {
-      <div class="event-card">
-        @if (event.image) {
-        <img [src]="'data:image/png;base64,' + event.image" class="event-image" alt="{{event.name}}" loading="lazy">
-        }
+      <div *ngFor="let event of events" class="event-card">
+        <img *ngIf="event.image" [src]="'data:image/png;base64,' + event.image" class="event-image" alt="{{event.name}}" loading="lazy">
 
         <div class="event-content">
           <h3 class="event-title">{{event.name}}</h3>
@@ -33,55 +25,37 @@
             <p>
               <i class="bi bi-calendar-event"></i>
               {{formatDate(event.start_date)}}
-              @if (event.end_date) {
-              <span> - {{formatTime(event.end_date)}}</span>
-              }
+              <span *ngIf="event.end_date"> - {{formatDate(event.end_date)}}</span>
             </p>
-            @if (event.location) {
-            <p>
+            <p *ngIf="event.location">
               <i class="bi bi-geo-alt"></i> {{event.location}}
             </p>
-            }
           </div>
 
-          @if (event.description) {
-          <p class="event-description">{{event.description}}</p>
-          }
+          <div class="event-description-container" (click)="toggleDescription(event.id)">
+            <p class="event-description" [class.expanded]="isExpanded(event.id)">
+              {{ isExpanded(event.id) ? event.description : getTruncatedDescription(event.description) }}
+            </p>
+            <button *ngIf="event.description && event.description.length > maxDescriptionLength" 
+                    class="read-more-btn">
+              {{ isExpanded(event.id) ? 'Voir moins' : 'Voir plus...' }}
+            </button>
+          </div>
           
           <div class="event-actions">
-            <!-- Debug visible temporairement pour diagnostiquer -->
-            <div class="debug-info" style="background: #f0f0f0; padding: 5px; margin: 5px 0; font-size: 12px;">
-              <strong>Debug:</strong><br>
-              Link: "{{event.link}}"<br>
-              Type: {{event.link ? typeof event.link : 'null/undefined'}}<br>
-              Longueur: {{event.link?.length || 0}}<br>
-              HasValidLink: {{hasValidLink(event)}}<br>
-              IsValidUrl: {{event.link ? isValidUrl(event.link) : false}}
-            </div>
-
-            <!-- Condition modifiée pour utiliser notre nouvelle méthode -->
-            @if (hasValidLink(event)) {
-            <button class="register-button" 
-                    (click)="openRegistrationLink(event.link)"
-                    [disabled]="!isValidUrl(event.link)">
+            <button *ngIf="hasValidLink(event)" class="register-button" 
+                    (click)="openRegistrationLink(event.lien!)"
+                    [disabled]="!isValidUrl(event.lien!)">
               <i class="bi bi-pencil-square"></i> S'inscrire
             </button>
-            } @else {
-            <div class="no-link">
+            <div *ngIf="!hasValidLink(event)" class="no.lien">
               <i class="bi bi-exclamation-circle"></i> 
-              @if (!event.link) {
-                Aucun lien d'inscription fourni
-              } @else {
-                Lien d'inscription invalide
-              }
+              <span *ngIf="!event.lien">Aucun lien d'inscription fourni</span>
+              <span *ngIf="event.lien">Lien d'inscription invalide</span>
             </div>
-            }
           </div>
-
         </div>
       </div>
-      }
     </div>
   </div>
-  }
 </div>

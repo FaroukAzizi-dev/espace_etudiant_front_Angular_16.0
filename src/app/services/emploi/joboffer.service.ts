@@ -5,13 +5,14 @@ import { Observable } from 'rxjs';
 export interface JobOffer {
   id: number;
   title: string;
-  company_id: [number, string];
+  company:string;
   contract_type: string;
   description: string;
   requirements: string;
   salary: string;
   deadline: string;
   contact_email: string;
+  lien: string
 }
 
 @Injectable({

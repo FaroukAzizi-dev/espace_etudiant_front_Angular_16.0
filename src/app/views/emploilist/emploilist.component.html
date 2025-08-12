@@ -1,8 +1,7 @@
-<!-- internshipofferlist.component.html -->
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
   <div class="mb-8">
     <div class="w-full">
-      <h1 class="text-4xl font-bold text-gold mb-4">Offres de Stage</h1>
+      <h1 class="text-4xl font-bold text-gold mb-4">Offres d'Emploi</h1>
       
       <!-- Search and Filters -->
       <div class="bg-white rounded-lg shadow-sm mb-6">
@@ -18,16 +17,28 @@
                 <input type="text" 
                        class="flex-1 min-w-0 block w-full px-3 py-3 rounded-r-md border-gray-300 focus:border-gold focus:ring-gold text-base" 
                        [(ngModel)]="searchTerm" 
-                       placeholder="Rechercher un stage..."
+                       placeholder="Rechercher une offre..."
                        (input)="applyFilters()">
               </div>
             </div>
             <div class="md:col-span-4">
               <div class="flex">
-                <button *ngIf="searchTerm" 
+                <label class="inline-flex items-center px-3 rounded-l-md bg-gold text-white" for="contractType">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5z"/>
+                  </svg>
+                </label>
+                <select class="flex-1 min-w-0 block w-full px-3 py-3 rounded-r-md border-gray-300 focus:border-gold focus:ring-gold text-base" 
+                        id="contractType" 
+                        [(ngModel)]="selectedContractType" 
+                        (change)="applyFilters()">
+                  <option value="">Tous les types</option>
+                  <option *ngFor="let type of contractTypes" [value]="type">{{type}}</option>
+                </select>
+                <button *ngIf="selectedContractType || searchTerm" 
                         class="ml-2 inline-flex items-center px-4 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gold"
                         type="button"
-                        (click)="resetSearch()">
+                        (click)="resetFilters()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
@@ -36,43 +47,11 @@
               </div>
             </div>
           </div>
-          
-          <!-- Advanced Search Options -->
-          <div *ngIf="advancedSearch" class="mt-4 pt-4 border-t border-gray-200">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <label class="inline-flex items-center">
-                <input type="checkbox" class="rounded border-gray-300 text-gold focus:ring-gold" [(ngModel)]="searchFields.title">
-                <span class="ml-2 text-gray-700">Titre</span>
-              </label>
-              <label class="inline-flex items-center">
-                <input type="checkbox" class="rounded border-gray-300 text-gold focus:ring-gold" [(ngModel)]="searchFields.company">
-                <span class="ml-2 text-gray-700">Entreprise</span>
-              </label>
-              <label class="inline-flex items-center">
-                <input type="checkbox" class="rounded border-gray-300 text-gold focus:ring-gold" [(ngModel)]="searchFields.description">
-                <span class="ml-2 text-gray-700">Description</span>
-              </label>
-              <label class="inline-flex items-center">
-                <input type="checkbox" class="rounded border-gray-300 text-gold focus:ring-gold" [(ngModel)]="searchFields.requirements">
-                <span class="ml-2 text-gray-700">Exigences</span>
-              </label>
-            </div>
-            <div class="mt-3 text-sm text-gray-500">
-              Affichage de {{filteredOffers.length}} sur {{offers.length}} offres
-            </div>
-          </div>
-          
-          <div class="mt-3">
-            <button class="text-gold hover:text-gold-dark text-sm font-medium" 
-                    (click)="toggleAdvancedSearch()">
-              {{ advancedSearch ? 'Recherche simple' : 'Recherche avancée' }}
-            </button>
-          </div>
         </div>
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="loading" class="text-center py-12">
+      <div *ngIf="isLoading" class="text-center py-12">
         <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-gold border-r-transparent" role="status">
           <span class="sr-only">Chargement...</span>
         </div>
@@ -80,7 +59,7 @@
       </div>
 
       <!-- Error State -->
-      <div *ngIf="!loading && error" class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4" role="alert">
+      <div *ngIf="!isLoading && error" class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4" role="alert">
         <div class="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -90,7 +69,7 @@
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="!loading && !error && filteredOffers.length === 0" class="text-center py-12">
+      <div *ngIf="!isLoading && !error && filteredOffers.length === 0" class="text-center py-12">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
@@ -99,7 +78,7 @@
       </div>
 
       <!-- Offers List -->
-      <div *ngIf="!loading && !error" class="space-y-6">
+      <div *ngIf="!isLoading && !error" class="space-y-6">
         <div *ngFor="let offer of filteredOffers" class="w-full">
           <div class="bg-white rounded-lg shadow-sm h-full overflow-hidden">
             <div class="p-6">
@@ -113,17 +92,17 @@
                       </svg>
                       {{offer.company}}
                     </span>
-                    <span *ngIf="offer.duration" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      {{offer.duration}}
+                      {{offer.contract_type}}
                     </span>
                   </div>
                 </div>
-                <span *ngIf="offer.deadline" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   {{formatDate(offer.deadline)}}
                 </span>
@@ -131,13 +110,13 @@
 
               <div class="mb-4">
                 <div class="flex gap-3">
-                  <span *ngIf="offer.remuneration" class="text-black font-semibold">
+                  <span *ngIf="offer.salary" class="text-black font-semibold">
                     <span class="inline-flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
                       </svg>
-                      {{offer.remuneration}}
+                      {{offer.salary}}
                     </span>
                   </span>
                 </div>
@@ -173,7 +152,7 @@
                 </div>
                 <button *ngIf="offer.lien" 
                         class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gold hover:bg-gold-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold"
-                        (click)="openGoogleForm(offer.lien)">
+                        (click)="openApplicationLink(offer.lien)">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
                   </svg>

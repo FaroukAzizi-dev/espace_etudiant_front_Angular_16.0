@@ -18,15 +18,16 @@ export class InternshipOfferListComponent implements OnInit {
   loading = true;
   error: string | null = null;
   searchTerm = '';
-  expandedOfferId: number | null = null; // Ajout pour suivre l'offre développée
+  expandedOfferId: number | null = null;
+  maxDescriptionLength = 160; // Ajout de la propriété manquante
 
-    searchFields = {
+  searchFields = {
     title: true,
     company: true,
     description: false,
     requirements: false
-    };
-    advancedSearch = false;
+  };
+  advancedSearch = false;
 
   constructor(
     private offerService: InternshipOfferService,
@@ -36,7 +37,6 @@ export class InternshipOfferListComponent implements OnInit {
   ngOnInit(): void {
     this.loadOffers();
   }
-
 
   loadOffers(): void {
     this.loading = true;
@@ -55,6 +55,11 @@ export class InternshipOfferListComponent implements OnInit {
     });
   }
 
+  // Ajout de la méthode manquante
+  applyFilters(): void {
+    // Cette méthode est appelée lors de la recherche
+    // Le filtrage est déjà géré par le getter filteredOffers
+  }
 
   formatDate(dateString: string): string {
     return this.datePipe.transform(dateString, 'shortDate') || '';
@@ -64,26 +69,31 @@ export class InternshipOfferListComponent implements OnInit {
     return html?.replace(/<[^>]*>/g, '') || '';
   }
 
-  openGoogleForm(url: string) {
+  // Ajout de la méthode manquante
+  getTruncatedDescription(description: string): string {
+    if (!description) return '';
+    return description.length > this.maxDescriptionLength 
+      ? description.substring(0, this.maxDescriptionLength) 
+      : description;
+  }
+
+  openGoogleForm(url: string): void {
     window.open(url, '_blank');
   }
 
-  // Nouvelle méthode pour basculer l'affichage de la description complète
   toggleDescription(offerId: number): void {
     this.expandedOfferId = this.expandedOfferId === offerId ? null : offerId;
   }
 
-  // Méthode pour vérifier si une offre est développée
   isExpanded(offerId: number): boolean {
     return this.expandedOfferId === offerId;
   }
 
-    get filteredOffers(): InternshipOffer[] {
+  get filteredOffers(): InternshipOffer[] {
     if (!this.searchTerm.trim()) return this.offers;
     
     const term = this.searchTerm.toLowerCase().trim();
     return this.offers.filter(offer => {
-      // Recherche basique
       let matches = false;
       
       if (this.searchFields.title && offer.title?.toLowerCase().includes(term)) {

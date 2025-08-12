@@ -10,7 +10,7 @@ export interface Event {
   end_date?: string;
   location?: string;
   image?: string;
-  link?: string; // Ajout de la propriété pour le lien d'inscription
+  lien?: string; // Ajout de la propriété pour le lien d'inscription
 }
 
 @Injectable({

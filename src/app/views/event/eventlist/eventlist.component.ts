@@ -15,6 +15,8 @@ import { Event } from '../../../services/event/event.service';
 export class EventListComponent implements OnInit {
   events: Event[] = [];
   isLoading = true;
+  expandedEventId: number | null = null; // Ajout pour suivre l'événement développé
+  maxDescriptionLength = 160; // Longueur maximale avant troncature
 
   constructor(private eventService: EventService) { }
 
@@ -27,21 +29,7 @@ export class EventListComponent implements OnInit {
     
     this.eventService.getAllEvents().subscribe({
       next: (response) => {
-        console.log('Response complète:', response);
         this.events = response.events;
-        
-        // Debug pour chaque événement
-        this.events.forEach((event, index) => {
-          console.log(`Événement ${index}:`, {
-            id: event.id,
-            name: event.name,
-            link: event.link,
-            linkType: typeof event.link,
-            linkEmpty: !event.link,
-            linkLength: event.link?.length
-          });
-        });
-        
         this.isLoading = false;
       },
       error: (error) => {
@@ -53,22 +41,51 @@ export class EventListComponent implements OnInit {
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleString('fr-FR', {
+    return date.toLocaleDateString('fr-FR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     });
   }
 
-  formatTime(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleString('fr-FR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  // Méthode pour basculer l'affichage de la description complète
+  toggleDescription(eventId: number): void {
+    this.expandedEventId = this.expandedEventId === eventId ? null : eventId;
   }
 
+  // Méthode pour vérifier si un événement est développé
+  isExpanded(eventId: number): boolean {
+    return this.expandedEventId === eventId;
+  }
 
+  // Méthode pour obtenir la description tronquée
+  getTruncatedDescription(description: string): string {
+    if (!description) return '';
+    return description.length > this.maxDescriptionLength 
+      ? description.substring(0, this.maxDescriptionLength) 
+      : description;
+  }
+
+  hasValidLink(event: Event): boolean {
+    return !!event.lien && this.isValidUrl(event.lien);
+  }
+
+  isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  openRegistrationLink(url: string): void {
+    if (this.isValidUrl(url)) {
+      window.open(url, '_blank');
+    }
+  }
+
+  getLinkType(link: string | undefined): string {
+    return link ? typeof link : 'null/undefined';
+  }
 }
