@@ -18,6 +18,7 @@ import { EventListComponent } from './views/event/eventlist/eventlist.component'
 import { InternshipOfferListComponent } from './views/internship/internshipofferlist/internshipofferlist.component';
 import { DashboardContentComponent } from './views/dashboardcontent/dashboardcontent.component';
 import { EmploiListComponent } from './views/emploilist/emploilist.component';
+import { AbsenceListComponent } from './views/absencelist_etudiant/absencelist/absencelist.component';
 
 
 export const routes: Routes = [
@@ -59,7 +60,8 @@ export const routes: Routes = [
           { path: 'emploidetemps', component: StudentScheduleComponent },
           { path: 'evenements', component: EventListComponent },
           { path: 'offres-stage', component: InternshipOfferListComponent },
-          { path: 'offre-emploi' , component: EmploiListComponent}
+          { path: 'offre-emploi' , component: EmploiListComponent},
+          { path: 'absence' , component: AbsenceListComponent}
         ]
       }
     ]

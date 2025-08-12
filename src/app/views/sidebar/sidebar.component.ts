@@ -36,7 +36,7 @@ export class SidebarComponent {
   {
     name: "Mes Absences",
     icon: "filetext",
-    route: "",
+    route: "/student/dashboard/absence",
     active: false,
   },
   {
