@@ -11,6 +11,7 @@ interface Session {
   classe_id: [number, string];
   start_datetime: string;
   end_datetime: string;
+  salle_name: string;
   timing_id: [number, string];
   state: string;
 }

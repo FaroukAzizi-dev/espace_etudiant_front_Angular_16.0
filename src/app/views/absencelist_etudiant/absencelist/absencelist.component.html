@@ -1,84 +1,93 @@
-<mat-card class="max-w-4xl mx-auto my-4 shadow-lg bg-white dark:bg-gray-800">
-  <mat-card-header class="px-6 pt-6 pb-2">
-    <mat-card-title class="text-2xl font-bold text-gray-900 dark:text-white">Mes Absences</mat-card-title>
-    <mat-card-subtitle class="text-gray-600 dark:text-gray-300">Liste de toutes mes absences</mat-card-subtitle>
-  </mat-card-header>
-
-  <mat-card-content class="px-6 pb-6">
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-8 space-y-4">
-      <mat-spinner [diameter]="50" color="primary"></mat-spinner>
-      <p class="text-gray-600 dark:text-gray-300">Chargement des absences...</p>
-    </div>
-
-    <!-- Error State -->
-    <div *ngIf="error && !isLoading" class="flex flex-col items-center justify-center py-8 space-y-4 text-center">
-      <mat-icon class="text-red-500 w-12 h-12 text-5xl">error</mat-icon>
-      <p class="text-gray-800 dark:text-gray-200">{{ error }}</p>
-      <button mat-raised-button color="primary" (click)="refresh()" class="flex items-center gap-2">
-        <mat-icon>refresh</mat-icon>
-        Réessayer
-      </button>
+<!-- absencelist.component.html -->
+<div class="absence-container">
+  <div class="absence-card">
+    <!-- Header -->
+    <div class="absence-header">
+      <h1 class="header-title">Mes Absences</h1>
+      <p class="header-subtitle">
+        Liste de toutes mes absences • 
+        <span *ngIf="!isLoading && !error">
+          {{ absences.length }} {{ absences.length > 1 ? 'enregistrements' : 'enregistrement' }}
+        </span>
+      </p>
     </div>
 
     <!-- Content -->
-    <div *ngIf="!isLoading && !error">
-      <!-- Empty State -->
-      <div *ngIf="absences.length === 0" class="flex flex-col items-center justify-center py-8 space-y-4 text-center">
-        <mat-icon class="text-green-500 w-12 h-12 text-5xl">check_circle</mat-icon>
-        <p class="text-gray-600 dark:text-gray-300">Aucune absence enregistrée</p>
+    <div class="absence-content fade-in">
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-state">
+        <mat-spinner class="loading-spinner" [diameter]="50" color="primary"></mat-spinner>
+        <p class="loading-text">Chargement des absences...</p>
       </div>
 
-      <!-- Table -->
-      <div *ngIf="absences.length > 0" class="overflow-x-auto">
-        <table mat-table [dataSource]="absences" class="w-full mb-4">
-          <!-- Date Column -->
-          <ng-container matColumnDef="date">
-            <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700">Date</th>
-            <td mat-cell *matCellDef="let absence" class="px-4 py-3 text-gray-800 dark:text-gray-100 border-t border-gray-200 dark:border-gray-700">{{ absence.date }}</td>
-          </ng-container>
-
-          <!-- Heure Début Column -->
-          <ng-container matColumnDef="heure_debut">
-            <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700">Heure début</th>
-            <td mat-cell *matCellDef="let absence" class="px-4 py-3 text-gray-800 dark:text-gray-100 border-t border-gray-200 dark:border-gray-700">{{ absence.heure_debut }}</td>
-          </ng-container>
-
-          <!-- Heure Fin Column -->
-          <ng-container matColumnDef="heure_fin">
-            <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700">Heure fin</th>
-            <td mat-cell *matCellDef="let absence" class="px-4 py-3 text-gray-800 dark:text-gray-100 border-t border-gray-200 dark:border-gray-700">{{ absence.heure_fin }}</td>
-          </ng-container>
-
-          <!-- Statut Column -->
-          <ng-container matColumnDef="statut">
-            <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700">Statut</th>
-            <td mat-cell *matCellDef="let absence" class="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
-              <span [class]="getStatusClass(absence.statut)">
-                {{ absence.statut === 'justifiee' ? 'Justifiée' : 'Non justifiée' }}
-              </span>
-            </td>
-          </ng-container>
-
-          <!-- Motif Column -->
-          <ng-container matColumnDef="motif">
-            <th mat-header-cell *matHeaderCellDef class="px-4 py-3 text-left font-medium text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-700">Motif</th>
-            <td mat-cell *matCellDef="let absence" class="px-4 py-3 text-gray-800 dark:text-gray-100 border-t border-gray-200 dark:border-gray-700">{{ absence.motif || '-' }}</td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
-              class="hover:bg-gray-50 dark:hover:bg-gray-700/50"></tr>
-        </table>
-      </div>
-
-      <!-- Refresh Button -->
-      <div class="flex justify-end mt-4">
-        <button mat-raised-button color="primary" (click)="refresh()" class="flex items-center gap-2">
+      <!-- Error State -->
+      <div *ngIf="error && !isLoading" class="error-state">
+        <mat-icon class="error-icon">error_outline</mat-icon>
+        <p class="error-text">{{ error }}</p>
+        <button class="error-button" (click)="refresh()">
           <mat-icon>refresh</mat-icon>
-          Actualiser
+          Réessayer
         </button>
       </div>
+
+      <!-- Success Content -->
+      <div *ngIf="!isLoading && !error">
+        <!-- Empty State -->
+        <div *ngIf="absences.length === 0" class="empty-state">
+          <mat-icon class="empty-icon">sentiment_very_satisfied</mat-icon>
+          <p class="empty-text">Aucune absence enregistrée</p>
+        </div>
+
+        <!-- Table -->
+        <div *ngIf="absences.length > 0">
+          <div class="table-wrapper">
+            <table class="absence-table">
+              <thead class="table-header">
+                <tr>
+                  <th class="header-cell">Date</th>
+                  <th class="header-cell">Heure début</th>
+                  <th class="header-cell">Heure fin</th>
+                  <th class="header-cell">Statut</th>
+                  <th class="header-cell">Motif</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let absence of absences" class="table-row">
+                  <td class="table-cell date-cell">
+                    <span class="date-badge">{{ absence.date }}</span>
+                  </td>
+                  <td class="table-cell">
+                    <span class="time-badge">{{ absence.heure_debut || '--:--' }}</span>
+                  </td>
+                  <td class="table-cell">
+                    <span class="time-badge">{{ absence.heure_fin || '--:--' }}</span>
+                  </td>
+                  <td class="table-cell">
+                    <span 
+                      [class]="absence.statut === 'justifiee' ? 'status-justified' : 'status-not-justified'">
+                      {{ absence.statut === 'justifiee' ? 'Justifiée' : 'Non justifiée' }}
+                    </span>
+                  </td>
+                  <td class="table-cell">
+                    <span 
+                      class="motif-text"
+                      [class.empty-motif]="!absence.motif || absence.motif.trim() === ''">
+                      {{ absence.motif && absence.motif.trim() !== '' ? absence.motif : 'Aucun motif spécifié' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Refresh Button -->
+          <div class="button-container">
+            <button class="refresh-button" (click)="refresh()">
+              Actualiser
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </mat-card-content>
-</mat-card>
+  </div>
+</div>

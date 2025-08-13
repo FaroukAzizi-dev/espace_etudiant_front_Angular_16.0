@@ -339,3 +339,62 @@
     transform: rotate(360deg);
   }
 }
+
+/* Style général pour toutes les cartes de session */
+.session-card,
+.week-session,
+.month-session {
+  /* Vos styles existants... */
+  
+  /* Ajoutez ceci pour une meilleure organisation des éléments */
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Style spécifique pour la ligne de la salle */
+.session-salle {
+  font-size: 0.85rem;
+  color: #555;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+/* Icône optionnelle avant le nom de la salle */
+.session-salle::before {
+  content: "📍"; /* ou utiliser une icône SVG */
+  margin-right: 4px;
+  font-size: 0.8rem;
+}
+
+/* Pour la vue semaine où l'espace est limité */
+.week-session .session-salle {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Pour la vue mois où l'espace est très limité */
+.month-session .session-salle {
+  display: none; /* On cache en vue mois par manque d'espace */
+}
+
+/* Style cohérent avec les autres lignes */
+.session-subject {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.session-teacher {
+  font-size: 0.85rem;
+  color: #666;
+  font-style: italic;
+}
+
+.session-time {
+  font-size: 0.8rem;
+  color: #444;
+  margin-bottom: 4px;
+}

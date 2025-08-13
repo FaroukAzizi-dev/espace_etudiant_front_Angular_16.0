@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoteFormComponent } from '../note-form/note-form.component';
-import { TeacherAbsencesComponent } from '../teacher-absences/teacher-absences.component';
 
 @Component({
   selector: 'app-teacher-content',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NoteFormComponent, TeacherAbsencesComponent],
+  imports: [CommonModule, ReactiveFormsModule, NoteFormComponent],
   template: `
     <main class="flex-1 overflow-y-auto p-6 bg-background">
       <div class="mx-auto max-w-7xl space-y-8">
@@ -108,12 +107,8 @@ import { TeacherAbsencesComponent } from '../teacher-absences/teacher-absences.c
             </div>
           </section>
 
-          <!-- Onglet Gestion des Absences -->
-          <section *ngSwitchCase="'absences'" class="space-y-6">
-            <app-teacher-absences></app-teacher-absences>
-          </section>
-
-          <!-- Onglet Statistiques -->
+     
+         <!-- Onglet Statistiques -->
           <section *ngSwitchCase="'stats'" class="space-y-6">
             <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
               <div class="rounded-lg border border-border bg-card">

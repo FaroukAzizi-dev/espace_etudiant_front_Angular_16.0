@@ -4,7 +4,6 @@ import { authGuard } from './services/guard/guard.guard';
 import { StudentDashboardComponent } from './views/student-contentdashboard/student-contentdashboard.component';
 import { AdminDashboardComponent } from './views/admin-dashboard/admin-dashboard.component';
 import { TeacherDashboardComponent } from './views/teacher-dashboard/teacher-dashboard.component';
-import { TeacherContentComponent } from './views/teacher-dashboard/teacher-content/teacher-content.component';
 import { TeacherSubjectsComponent } from './views/teacher-dashboard/teacher-subjects/teacher-subjects.component';
 import { TeacherAbsencesComponent } from './views/teacher-dashboard/teacher-absences/teacher-absences.component';
 import { NoteFormComponent } from './views/teacher-dashboard/note-form/note-form.component';
@@ -19,7 +18,7 @@ import { InternshipOfferListComponent } from './views/internship/internshipoffer
 import { DashboardContentComponent } from './views/dashboardcontent/dashboardcontent.component';
 import { EmploiListComponent } from './views/emploilist/emploilist.component';
 import { AbsenceListComponent } from './views/absencelist_etudiant/absencelist/absencelist.component';
-
+import { TeacherContentComponent } from './views/teacher-dashboard/teacher-content/teacher-content.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },

@@ -1,0 +1,382 @@
+// absencelist.component.scss - Thème Jaune (#FFD700) et Blanc avec texte noir
+
+// Variables
+$primary-color: #FFD700; // Yellow
+$white: #FFFFFF;
+$black: #000000; // Added black for text
+
+$primary-gradient: linear-gradient(135deg, $primary-color 0%, darken($primary-color, 10%) 100%);
+$card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+$hover-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+$border-radius: 16px;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Main container
+.absence-container {
+  max-width: 64rem;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  background: $white;
+  min-height: 100vh;
+  color: $black; // Added default text color
+}
+
+// Card styling
+.absence-card {
+  border-radius: $border-radius;
+  box-shadow: $card-shadow;
+  border: 1px solid $primary-color;
+  transition: $transition;
+  background: $white;
+  overflow: hidden;
+  color: $black; // Added default text color
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $hover-shadow;
+    border-color: $primary-color;
+  }
+}
+
+// Header
+.absence-header {
+  background: $primary-gradient;
+  color: $white;
+  padding: 2rem;
+  
+  .header-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: $white; // Keep white text on yellow background
+  }
+  
+  .header-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    font-weight: 400;
+    color: $white; // Keep white text on yellow background
+  }
+}
+
+// Content area
+.absence-content {
+  padding: 2rem;
+  background: $white;
+  color: $black;
+}
+
+// Loading state
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+  
+  .loading-spinner {
+    margin-bottom: 1rem;
+    
+    ::ng-deep circle {
+      stroke: $primary-color;
+    }
+  }
+  
+  .loading-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: $black; // Changed to black
+  }
+}
+
+// Error state
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+  
+  .error-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: $primary-color;
+    margin-bottom: 1rem;
+  }
+  
+  .error-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    color: $black; // Changed to black
+  }
+  
+  .error-button {
+    background: $primary-gradient;
+    color: $white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: $transition;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba($primary-color, 0.4);
+    }
+  }
+}
+
+// Empty state
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+  
+  .empty-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: $primary-color;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: $black; // Changed to black
+  }
+}
+
+// Table container
+.table-wrapper {
+  background: $white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid $primary-color;
+  margin-bottom: 2rem;
+}
+
+// Table styling
+.absence-table {
+  width: 100%;
+  background: transparent;
+  
+  .table-header {
+    background: $white;
+    
+    .header-cell {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: $black; // Changed to black
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 2px solid $primary-color;
+    }
+  }
+  
+  .table-row {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid $primary-color;
+    
+    &:hover {
+      background: rgba($primary-color, 0.1);
+    }
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    .table-cell {
+      padding: 1rem;
+      font-size: 0.95rem;
+      color: $black; // Changed to black
+      font-weight: 500;
+      vertical-align: middle;
+      
+      &.date-cell {
+        font-weight: 600;
+        color: $black; // Changed to black
+      }
+    }
+  }
+}
+
+// Status badges
+.status-justified,
+.status-not-justified {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba($primary-color, 0.1);
+  color: $black; // Changed to black
+  border: 1px solid $primary-color;
+  transition: $transition;
+  
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba($primary-color, 0.3);
+  }
+}
+
+// Time display
+.time-badge {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: $white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  color: $black; // Changed to black
+  border: 1px solid $primary-color;
+  display: inline-block;
+}
+
+// Date display
+.date-badge {
+  font-weight: 600;
+  color: $black; // Changed to black
+  font-size: 0.95rem;
+}
+
+// Motif display
+.motif-text {
+  font-style: italic;
+  color: $black; // Changed to black
+  
+  &.empty-motif {
+    opacity: 0.6;
+    font-size: 0.875rem;
+  }
+}
+
+// Refresh button
+.refresh-button {
+  background: $primary-gradient;
+  color: $white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba($primary-color, 0.3);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba($primary-color, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Button container
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .absence-container {
+    margin: 0.5rem;
+    padding: 0;
+  }
+  
+  .absence-card {
+    border-radius: 12px;
+  }
+  
+  .absence-header {
+    padding: 1.5rem;
+    border-radius: 12px 12px 0 0;
+    
+    .header-title {
+      font-size: 1.5rem;
+    }
+    
+    .header-subtitle {
+      font-size: 0.875rem;
+    }
+  }
+  
+  .absence-content {
+    padding: 1.5rem;
+  }
+  
+  .table-wrapper {
+    border-radius: 8px;
+  }
+  
+  .absence-table {
+    .header-cell,
+    .table-cell {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+  
+  .status-justified,
+  .status-not-justified {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6875rem;
+  }
+  
+  .time-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .refresh-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+  }
+}

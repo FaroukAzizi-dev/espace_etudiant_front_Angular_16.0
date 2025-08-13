@@ -1,3 +1,4 @@
+// absencelist.component.ts - Version propre sans code de style
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbsenceService } from '../../../services/listabsence_etudiant/absence.service';
@@ -59,12 +60,4 @@ export class AbsenceListComponent implements OnInit {
   refresh(): void {
     this.loadAbsences();
   }
-
-  getStatusClass(status: string): string {
-    return status === 'justifiee'
-      ? 'text-green-600 dark:text-green-400'
-      : 'text-red-600 dark:text-red-400';
-  }
-
-
 }

@@ -59,6 +59,7 @@
       <div class="session-card">
         <div class="session-subject">{{ session.matiere_id[1] }}</div>
         <div class="session-teacher">Prof. {{ session.enseignant_id[1] }}</div>
+         <div class="session-salle">Salle. {{ session.salle_name }}</div>
         <div class="session-time">
           {{ formatTime(session.start_datetime) }} - {{ formatTime(session.end_datetime) }}
         </div>
@@ -90,6 +91,7 @@
           </div>
           <div class="session-subject">{{ session.matiere_id[1] }}</div>
           <div class="session-teacher">{{ session.enseignant_id[1] }}</div>
+          <div class="session-salle">Salle:{{session.salle_name}}</div>
         </div>
         }
       </div>
